@@ -30,6 +30,7 @@ pub mod sop_workshop;
 pub mod spawn_subagent;
 pub mod todo_write;
 pub mod verifiable_intent;
+pub mod charge;
 
 // Tool types from zeroclaw-tools (direct imports, no shims)
 pub use zeroclaw_tools::ask_user::AskUserTool;
@@ -145,6 +146,7 @@ pub use sop_workshop::SopWorkshopTool;
 pub use spawn_subagent::SpawnSubagentTool;
 pub use todo_write::TodoWriteTool;
 pub use verifiable_intent::VerifiableIntentTool;
+pub use charge::ChargeTool;
 
 /// Re-entrant agent-spawning tools that must never be collapsed by the
 /// per-turn duplicate-call guard: launching several with the same prompt
@@ -655,6 +657,7 @@ pub fn all_tools_with_runtime(
         )),
         Arc::new(CalculatorTool::new()),
         Arc::new(WeatherTool::new()),
+        Arc::new(ChargeTool::new()),
         Arc::new(CanvasTool::new(canvas_store.unwrap_or_default())),
         Arc::new(TodoWriteTool::new()),
     ];

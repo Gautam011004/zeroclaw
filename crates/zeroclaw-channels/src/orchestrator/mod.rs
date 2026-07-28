@@ -322,6 +322,7 @@ enum ChannelRuntimeCommand {
     NewSession,
     SetThinking(Option<ThinkingLevel>),
     InvalidThinking(String),
+    
 }
 
 #[derive(Debug, Clone, Default, Deserialize)]
