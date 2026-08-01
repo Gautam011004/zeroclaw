@@ -7,7 +7,7 @@ use crate::agent::tool_execution::ToolExecutionOutcome;
 use anyhow::Result;
 use tokio::sync::mpsc::Sender;
 use tokio_util::sync::CancellationToken;
-use zeroclaw_api::agent::TurnEvent;
+use zeroclaw_api::agent::{ToolArtifact, TurnEvent};
 use zeroclaw_tool_call_parser::ParsedToolCall;
 
 /// Minimum characters per chunk when relaying LLM text to a streaming draft.
