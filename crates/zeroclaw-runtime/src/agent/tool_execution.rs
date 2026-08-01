@@ -604,6 +604,7 @@ mod tests {
                 success: true,
                 output: "executed via poisoned lock recovery".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }

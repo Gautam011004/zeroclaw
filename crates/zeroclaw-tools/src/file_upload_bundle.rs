@@ -228,6 +228,7 @@ impl Tool for FileUploadBundleTool {
                     "file_upload_bundle is disabled: [file_upload_bundle].url is not configured"
                         .into(),
                 ),
+                attachments: Vec::new(),
             });
         };
 
@@ -239,6 +240,7 @@ impl Tool for FileUploadBundleTool {
                 error: Some(format!(
                     "Unsupported HTTP method '{method}'. Only POST and PUT are allowed."
                 )),
+                attachments: Vec::new(),
             });
         }
 
@@ -247,6 +249,7 @@ impl Tool for FileUploadBundleTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: autonomy is read-only".into()),
+                attachments: Vec::new(),
             });
         }
 
@@ -255,6 +258,7 @@ impl Tool for FileUploadBundleTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Rate limit exceeded: too many actions in the last hour".into()),
+                attachments: Vec::new(),
             });
         }
 
@@ -268,6 +272,7 @@ impl Tool for FileUploadBundleTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("file_paths must not be empty".into()),
+                attachments: Vec::new(),
             });
         }
         if raw_paths.len() as u64 > self.config.max_files as u64 {
@@ -279,6 +284,7 @@ impl Tool for FileUploadBundleTool {
                     raw_paths.len(),
                     self.config.max_files
                 )),
+                attachments: Vec::new(),
             });
         }
 
@@ -310,6 +316,7 @@ impl Tool for FileUploadBundleTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Path not allowed by security policy: {p}")),
+                    attachments: Vec::new(),
                 });
             }
             paths.push(p.to_string());
@@ -320,6 +327,7 @@ impl Tool for FileUploadBundleTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Rate limit exceeded: action budget exhausted".into()),
+                attachments: Vec::new(),
             });
         }
 
@@ -336,6 +344,7 @@ impl Tool for FileUploadBundleTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Failed to resolve file path {path}: {e}")),
+                        attachments: Vec::new(),
                     });
                 }
             };
@@ -348,6 +357,7 @@ impl Tool for FileUploadBundleTool {
                         self.security
                             .resolved_path_violation_message(&resolved_path),
                     ),
+                    attachments: Vec::new(),
                 });
             }
 
@@ -358,6 +368,7 @@ impl Tool for FileUploadBundleTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Failed to read file metadata for {path}: {e}")),
+                        attachments: Vec::new(),
                     });
                 }
             };
@@ -367,6 +378,7 @@ impl Tool for FileUploadBundleTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Not a regular file: {}", resolved_path.display())),
+                    attachments: Vec::new(),
                 });
             }
 
@@ -382,6 +394,7 @@ impl Tool for FileUploadBundleTool {
                         metadata.len(),
                         self.config.max_file_size_bytes
                     )),
+                    attachments: Vec::new(),
                 });
             }
 
@@ -397,6 +410,7 @@ impl Tool for FileUploadBundleTool {
                     error: Some(format!(
                         "Duplicate file name in bundle: {file_name} (filenames must be unique)"
                     )),
+                    attachments: Vec::new(),
                 });
             }
 
@@ -407,6 +421,7 @@ impl Tool for FileUploadBundleTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Failed to read {}: {e}", resolved_path.display())),
+                        attachments: Vec::new(),
                     });
                 }
             };
@@ -424,6 +439,7 @@ impl Tool for FileUploadBundleTool {
                         actual_len,
                         self.config.max_file_size_bytes
                     )),
+                    attachments: Vec::new(),
                 });
             }
 
@@ -436,6 +452,7 @@ impl Tool for FileUploadBundleTool {
                         "Bundle too large: cumulative {} bytes exceeds limit {} bytes",
                         total_bytes, self.config.max_total_size_bytes
                     )),
+                    attachments: Vec::new(),
                 });
             }
 
@@ -456,6 +473,7 @@ impl Tool for FileUploadBundleTool {
                 error: Some(format!(
                     "entry_file_name '{name}' does not match any file in file_paths"
                 )),
+                attachments: Vec::new(),
             });
         }
 
@@ -471,6 +489,7 @@ impl Tool for FileUploadBundleTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Failed to build multipart part: {e}")),
+                        attachments: Vec::new(),
                     });
                 }
             };
@@ -506,6 +525,7 @@ impl Tool for FileUploadBundleTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Bundle upload request failed: {e}")),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -529,6 +549,7 @@ impl Tool for FileUploadBundleTool {
                 )
                 .into(),
                 error: None,
+                attachments: Vec::new(),
             })
         } else {
             Ok(ToolResult {
@@ -537,6 +558,7 @@ impl Tool for FileUploadBundleTool {
                 error: Some(format!(
                     "Upload endpoint returned status {status} for bundle of {file_count} files"
                 )),
+                attachments: Vec::new(),
             })
         }
     }

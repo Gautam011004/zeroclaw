@@ -173,6 +173,7 @@ impl Tool for ImageInfoTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(error),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -184,6 +185,7 @@ impl Tool for ImageInfoTool {
                 error: Some(
                     "Resolved image path is outside the allowed readable roots.".to_string(),
                 ),
+                attachments: Vec::new(),
             });
         }
 
@@ -210,6 +212,7 @@ impl Tool for ImageInfoTool {
                 error: Some(format!(
                     "Image too large: {file_size} bytes (max {MAX_IMAGE_BYTES} bytes)"
                 )),
+                attachments: Vec::new(),
             });
         }
 
@@ -244,6 +247,7 @@ impl Tool for ImageInfoTool {
             success: true,
             output: output.into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 }

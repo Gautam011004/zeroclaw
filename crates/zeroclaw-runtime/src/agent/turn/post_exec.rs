@@ -57,6 +57,7 @@ pub(crate) async fn record_executed_outcomes(
                 success: outcome.success,
                 output: outcome.output.clone().into(),
                 error: None,
+                attachments: Vec::new(),
             };
             hooks
                 .fire_after_tool_call(&call.name, &tool_result_obj, outcome.duration)

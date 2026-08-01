@@ -27,6 +27,7 @@ use crate::tools::sop_list::SopListTool;
 use crate::tools::sop_status::SopStatusTool;
 use crate::tools::spawn_subagent::SpawnSubagentTool;
 use crate::tools::verifiable_intent::VerifiableIntentTool;
+use crate::tools::charge::ChargeTool;
 
 tool_attribution!(CronAddTool, ToolKind::Plugin);
 tool_attribution!(CronListTool, ToolKind::Plugin);
@@ -56,6 +57,7 @@ tool_attribution!(SopListTool, ToolKind::SopList);
 tool_attribution!(SopStatusTool, ToolKind::SopStatus);
 tool_attribution!(SpawnSubagentTool, ToolKind::SpawnSubagent);
 tool_attribution!(VerifiableIntentTool, ToolKind::Plugin);
+tool_attribution!(ChargeTool, ToolKind::Plugin);
 
 impl Attributable for ArcToolRef {
     fn role(&self) -> Role {

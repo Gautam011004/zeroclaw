@@ -174,6 +174,7 @@ impl Tool for BrowserDelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("browser_delegate tool is denied by security policy".into()),
+                attachments: Vec::new()
             });
         }
         if !self.security.record_action() {
@@ -181,6 +182,7 @@ impl Tool for BrowserDelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("browser_delegate action rate-limited".into()),
+                attachments: Vec::new()
             });
         }
 
@@ -195,6 +197,7 @@ impl Tool for BrowserDelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("'task' parameter is required and cannot be empty".into()),
+                attachments: Vec::new()
             });
         }
 
@@ -212,6 +215,7 @@ impl Tool for BrowserDelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("URL validation failed: {e}")),
+                attachments: Vec::new()
             });
         }
 
@@ -223,6 +227,7 @@ impl Tool for BrowserDelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("task text contains a disallowed URL: {e}")),
+                attachments: Vec::new()
             });
         }
 
@@ -240,6 +245,7 @@ impl Tool for BrowserDelegateTool {
                     "unsupported extract_format '{}': allowed values are 'text', 'json', 'summary'",
                     extract_format
                 )),
+                attachments: Vec::new()
             });
         }
 
@@ -272,6 +278,7 @@ impl Tool for BrowserDelegateTool {
                         } else {
                             Some(stderr_truncated)
                         },
+                        attachments: Vec::new()
                     })
                 } else {
                     Ok(ToolResult {
@@ -281,6 +288,7 @@ impl Tool for BrowserDelegateTool {
                             "CLI exited with status {}: {}",
                             output.status, stderr_truncated
                         )),
+                        attachments: Vec::new()
                     })
                 }
             }
@@ -288,6 +296,7 @@ impl Tool for BrowserDelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("failed to spawn browser CLI: {e}")),
+                attachments: Vec::new()
             }),
             Err(_) => Ok(ToolResult {
                 success: false,
@@ -296,6 +305,7 @@ impl Tool for BrowserDelegateTool {
                     "browser task timed out after {}s",
                     self.config.task_timeout_secs
                 )),
+                attachments: Vec::new()
             }),
         }
     }

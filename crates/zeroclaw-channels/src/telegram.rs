@@ -996,7 +996,7 @@ impl TelegramChannel {
             serde_json::json!({ "command": "stop",   "description": "Cancel the current in-flight task" }),
             serde_json::json!({ "command": "model",  "description": "Show or switch the current model" }),
             serde_json::json!({ "command": "models", "description": "List available model_providers or switch model_provider" }),
-            serde_json::json!({ "command": "config", "description": "Show current configuration" }),
+            serde_json::json!({ "command": "config", "description": "Show current configuration" })
         ];
 
         // Track registered names to deduplicate across skills and tools.
@@ -3677,6 +3677,7 @@ impl Channel for TelegramChannel {
     }
 
     async fn listen(&self, tx: tokio::sync::mpsc::Sender<ChannelMessage>) -> anyhow::Result<()> {
+        println!("Listener started");
         let mut offset: i64 = 0;
 
         if self.mention_only {
@@ -7617,6 +7618,7 @@ mod tests {
                 { "command": "model",  "description": "Show or switch the current model" },
                 { "command": "models", "description": "List available model_providers or switch model_provider" },
                 { "command": "config", "description": "Show current configuration" },
+                { "command": "charge", "description" : "Create a payment link" }
             ]
         });
 

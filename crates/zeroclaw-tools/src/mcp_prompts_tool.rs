@@ -23,6 +23,7 @@ impl McpPromptsTool {
             success: true,
             output: output.into(),
             error: None,
+            attachments: Vec::new(),
         }
     }
     fn fail(msg: impl Into<String>) -> ToolResult {
@@ -30,6 +31,7 @@ impl McpPromptsTool {
             success: false,
             output: ToolOutput::default(),
             error: Some(msg.into()),
+            attachments: Vec::new(),
         }
     }
 }

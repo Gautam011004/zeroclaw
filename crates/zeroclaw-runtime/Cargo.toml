@@ -78,6 +78,10 @@ urlencoding = "2.1"
 uuid = { version = "1.22", default-features = false, features = ["v4", "std"] }
 webpki-roots = "1.0.6"
 which = "8.0"
+solana-sdk = "4.1.0"
+solana-pay = "0.1.1"
+url = "2"
+qrcode = "0.14"    
 zeroclaw-macros.workspace = true
 
 # Optional deps

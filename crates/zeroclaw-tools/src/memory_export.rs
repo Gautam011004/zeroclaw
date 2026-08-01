@@ -122,12 +122,14 @@ impl Tool for MemoryExportTool {
                     success: true,
                     output: json_output.into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Export failed: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }

@@ -176,6 +176,7 @@ impl Tool for LinkedInTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: autonomy is read-only".into()),
+                attachments: Vec::new(),
             });
         }
 
@@ -185,6 +186,7 @@ impl Tool for LinkedInTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: rate limit exceeded".into()),
+                attachments: Vec::new(),
             });
         }
 
@@ -197,6 +199,7 @@ impl Tool for LinkedInTool {
                     success: true,
                     output: strategy.into(),
                     error: None,
+                    attachments: Vec::new(),
                 });
             }
             "create_post" => {
@@ -207,6 +210,7 @@ impl Tool for LinkedInTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("Missing required 'text' parameter for create_post".into()),
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -230,6 +234,7 @@ impl Tool for LinkedInTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some("'article_title' requires 'article_url' to be provided".into()),
+                        attachments: Vec::new(),
                     });
                 }
 
@@ -279,6 +284,7 @@ impl Tool for LinkedInTool {
                                     "Post {action_word} with image. Post ID: {post_id}, Image: {image_urn}"
                                 ).into(),
                                 error: None,
+                                attachments: Vec::new(),
                             });
                         }
                         Err(e) => {
@@ -310,6 +316,7 @@ impl Tool for LinkedInTool {
                     success: true,
                     output: format!("Post {action_word} successfully. Post ID: {post_id}").into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
 
@@ -326,6 +333,7 @@ impl Tool for LinkedInTool {
                     success: true,
                     output: serde_json::to_string(&posts)?.into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
 
@@ -337,6 +345,7 @@ impl Tool for LinkedInTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("Missing required 'post_id' parameter for comment".into()),
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -348,6 +357,7 @@ impl Tool for LinkedInTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("Missing required 'text' parameter for comment".into()),
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -358,6 +368,7 @@ impl Tool for LinkedInTool {
                     success: true,
                     output: format!("Comment posted successfully. Comment ID: {comment_id}").into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
 
@@ -369,6 +380,7 @@ impl Tool for LinkedInTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("Missing required 'post_id' parameter for react".into()),
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -382,6 +394,7 @@ impl Tool for LinkedInTool {
                             error: Some(
                                 "Missing required 'reaction_type' parameter for react".into(),
                             ),
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -392,6 +405,7 @@ impl Tool for LinkedInTool {
                     success: true,
                     output: format!("Reaction '{reaction_type}' added to post {post_id}").into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
 
@@ -405,6 +419,7 @@ impl Tool for LinkedInTool {
                             error: Some(
                                 "Missing required 'post_id' parameter for delete_post".into(),
                             ),
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -415,6 +430,7 @@ impl Tool for LinkedInTool {
                     success: true,
                     output: format!("Post {post_id} deleted successfully").into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
 
@@ -428,6 +444,7 @@ impl Tool for LinkedInTool {
                             error: Some(
                                 "Missing required 'post_id' parameter for get_engagement".into(),
                             ),
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -438,6 +455,7 @@ impl Tool for LinkedInTool {
                     success: true,
                     output: serde_json::to_string(&engagement)?.into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
 
@@ -448,6 +466,7 @@ impl Tool for LinkedInTool {
                     success: true,
                     output: serde_json::to_string(&profile)?.into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
 
@@ -455,6 +474,7 @@ impl Tool for LinkedInTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Unknown action: '{unknown}'")),
+                attachments: Vec::new(),
             }),
         }
     }

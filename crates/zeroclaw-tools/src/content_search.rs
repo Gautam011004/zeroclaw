@@ -137,6 +137,7 @@ impl Tool for ContentSearchTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Empty pattern is not allowed.".into()),
+                attachments: Vec::new()
             });
         }
 
@@ -154,6 +155,7 @@ impl Tool for ContentSearchTool {
                 error: Some(format!(
                     "Invalid output_mode '{output_mode}'. Allowed values: content, files_with_matches, count."
                 )),
+                attachments: Vec::new()
             });
         }
 
@@ -201,6 +203,7 @@ impl Tool for ContentSearchTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Path traversal ('..') is not allowed.".into()),
+                attachments: Vec::new()
             });
         }
 
@@ -214,6 +217,7 @@ impl Tool for ContentSearchTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Cannot resolve path '{search_path}': {e}")),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -225,6 +229,7 @@ impl Tool for ContentSearchTool {
                 error: Some(format!(
                     "Resolved path for '{search_path}' is outside the allowed workspace."
                 )),
+                attachments: Vec::new(),
             });
         }
 
@@ -236,6 +241,7 @@ impl Tool for ContentSearchTool {
                 error: Some(
                     "Multiline matching requires ripgrep (rg), which is not available.".into(),
                 ),
+                attachments: Vec::new()
             });
         }
 
@@ -305,6 +311,7 @@ impl Tool for ContentSearchTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some(format!("Search error: {e}")),
+                            attachments: Vec::new()
                         });
                     }
                     Ok(Err(e)) => {
@@ -312,6 +319,7 @@ impl Tool for ContentSearchTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some(format!("Search task failed: {e}")),
+                            attachments: Vec::new()
                         });
                     }
                     Err(_) => {
@@ -319,6 +327,7 @@ impl Tool for ContentSearchTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some(format!("Search timed out after {TIMEOUT_SECS} seconds.")),
+                            attachments: Vec::new()
                         });
                     }
                 }
@@ -338,6 +347,7 @@ impl Tool for ContentSearchTool {
             success: true,
             output: final_output.into(),
             error: None,
+            attachments: Vec::new()
         })
     }
 }
@@ -400,6 +410,7 @@ impl ContentSearchTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to execute search command: {e}")),
+                    attachments: Vec::new(),
                 });
             }
             Err(_) => {
@@ -407,6 +418,7 @@ impl ContentSearchTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Search timed out after {TIMEOUT_SECS} seconds.")),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -419,6 +431,7 @@ impl ContentSearchTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Search error: {}", stderr.trim())),
+                attachments: Vec::new(),
             });
         }
 

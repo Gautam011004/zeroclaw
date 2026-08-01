@@ -84,6 +84,7 @@ impl Tool for ReadSkillTool {
                 error: Some(format!(
                     "Unknown skill '{requested}'. Available skills: {available}"
                 )),
+                attachments: Vec::new(),
             });
         };
 
@@ -95,6 +96,7 @@ impl Tool for ReadSkillTool {
                     "Skill '{}' has no readable source location.",
                     skill.name
                 )),
+                attachments: Vec::new(),
             });
         };
 
@@ -103,6 +105,7 @@ impl Tool for ReadSkillTool {
                 success: true,
                 output: output.into(),
                 error: None,
+                attachments: Vec::new(),
             }),
             Err(err) => Ok(ToolResult {
                 success: false,
@@ -112,6 +115,7 @@ impl Tool for ReadSkillTool {
                     skill.name,
                     location.display()
                 )),
+                attachments: Vec::new(),
             }),
         }
     }

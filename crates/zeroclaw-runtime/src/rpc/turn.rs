@@ -232,9 +232,7 @@ mod tests {
                 .send(TurnEvent::ToolResult {
                     id: "c1".to_string(),
                     name: "shell".to_string(),
-                    output: "ok".to_string(),
-                    artifact: None,
-                })
+                    output: "ok".to_string() })
                 .await;
             let _ = tx
                 .send(TurnEvent::Chunk {

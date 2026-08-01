@@ -162,11 +162,13 @@ impl Tool for SpeakTool {
                     success: true,
                     output: format!("Played sound: {}", sound),
                     error: None,
+                    attachments: Vec::new(),
                 }),
                 Err(e) => Ok(ToolResult {
                     success: false,
                     output: String::new(),
                     error: Some(format!("Sound playback failed: {e}")),
+                    attachments: Vec::new(),
                 }),
             };
         }
@@ -181,6 +183,7 @@ impl Tool for SpeakTool {
                 success: false,
                 output: String::new(),
                 error: Some("Cannot speak empty text".to_string()),
+                attachments: Vec::new(),
             });
         }
 
@@ -190,6 +193,7 @@ impl Tool for SpeakTool {
                 success: false,
                 output: String::new(),
                 error: Some("Text too long (max 1000 characters)".to_string()),
+                attachments: Vec::new(),
             });
         }
 
@@ -200,11 +204,13 @@ impl Tool for SpeakTool {
                 success: true,
                 output: format!("Said: \"{}\"", text),
                 error: None,
+                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: String::new(),
                 error: Some(format!("Speech failed: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }

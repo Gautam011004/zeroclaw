@@ -1,5 +1,6 @@
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
+use crate::media::MediaAttachment;
 
 #[macro_export]
 macro_rules! tool_attribution {
@@ -170,6 +171,7 @@ impl<'de> Deserialize<'de> for ToolOutput {
 pub struct ToolResult {
     pub success: bool,
     pub output: ToolOutput,
+    pub attachments: Vec<MediaAttachment>,
     pub error: Option<String>,
 }
 
@@ -179,6 +181,7 @@ impl ToolResult {
         Self {
             success: true,
             output: output.into(),
+            attachments: Vec::new(),
             error: None,
         }
     }
@@ -188,6 +191,7 @@ impl ToolResult {
         Self {
             success: false,
             output: ToolOutput::default(),
+            attachments: Vec::new(),
             error: Some(error.into()),
         }
     }
@@ -197,9 +201,22 @@ impl ToolResult {
         Self {
             success: false,
             output: output.into(),
+            attachments: Vec::new(),
             error: Some(error.into()),
         }
     }
+
+    pub fn ok_with_attachments(
+    output: impl Into<ToolOutput>,
+    attachments: Vec<MediaAttachment>,
+    ) -> Self {
+        Self {
+            success: true,
+            output: output.into(),
+            attachments,
+            error: None,
+        }
+    }   
 }
 
 /// Loud, actionable banner that filesystem-touching tools surface when the

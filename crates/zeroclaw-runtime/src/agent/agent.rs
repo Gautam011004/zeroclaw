@@ -3888,6 +3888,7 @@ mod tests {
                 success: true,
                 output: "tool-out".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -4100,6 +4101,7 @@ mod tests {
                 success: true,
                 output: "tool-out".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -4128,6 +4130,7 @@ mod tests {
                 success: true,
                 output: "tool-out".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -5999,14 +6002,12 @@ mod tests {
                 Ok(
                     zeroclaw_providers::traits::StreamEvent::PreExecutedToolResult {
                         name: "file_read".into(),
-                        output: "a".into(),
-                    },
+                        output: "a".into() },
                 ),
                 Ok(
                     zeroclaw_providers::traits::StreamEvent::PreExecutedToolResult {
                         name: "shell".into(),
-                        output: "b".into(),
-                    },
+                        output: "b".into() },
                 ),
                 Ok(zeroclaw_providers::traits::StreamEvent::Final),
             ])
@@ -8002,6 +8003,7 @@ mod tests {
                 success: true,
                 output: "ok".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -9304,6 +9306,7 @@ mod tests {
                 success: true,
                 output: "model switch queued".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
