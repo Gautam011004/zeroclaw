@@ -110,6 +110,7 @@ impl Tool for HardwareCapabilitiesTool {
             success: !outputs.is_empty(),
             output: output.into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 }

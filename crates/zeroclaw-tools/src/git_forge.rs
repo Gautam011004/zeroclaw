@@ -903,6 +903,7 @@ impl Tool for GitForgeTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
+                attachments: Vec::new(),
             });
         }
 
@@ -913,6 +914,7 @@ impl Tool for GitForgeTool {
                 success: true,
                 output: Self::describe().to_string().into(),
                 error: None,
+                attachments: Vec::new(),
             });
         }
 
@@ -924,6 +926,7 @@ impl Tool for GitForgeTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -936,6 +939,7 @@ impl Tool for GitForgeTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(ferr("tool-git-forge-error-raw-requires-method")),
+                        attachments: Vec::new(),
                     });
                 }
             };
@@ -946,6 +950,7 @@ impl Tool for GitForgeTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(ferr("tool-git-forge-error-raw-requires-path")),
+                        attachments: Vec::new(),
                     });
                 }
             };
@@ -964,6 +969,7 @@ impl Tool for GitForgeTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(ferr("tool-git-forge-error-requires-resource")),
+                    attachments: Vec::new(),
                 });
             }
             let repo = match Self::str_arg(&args, "repo") {
@@ -973,6 +979,7 @@ impl Tool for GitForgeTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(ferr("tool-git-forge-error-missing-repo")),
+                        attachments: Vec::new(),
                     });
                 }
             };
@@ -990,6 +997,7 @@ impl Tool for GitForgeTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(e),
+                        attachments: Vec::new(),
                     });
                 }
             }
@@ -1005,6 +1013,7 @@ impl Tool for GitForgeTool {
                             .to_string()
                             .into(),
                         error: None,
+                        attachments: Vec::new(),
                     })
                 } else {
                     Ok(ToolResult {
@@ -1014,6 +1023,7 @@ impl Tool for GitForgeTool {
                             "{label} failed: HTTP {}: {}",
                             resp.status, resp.body
                         )),
+                        attachments: Vec::new(),
                     })
                 }
             }
@@ -1021,6 +1031,7 @@ impl Tool for GitForgeTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("{label} failed: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }

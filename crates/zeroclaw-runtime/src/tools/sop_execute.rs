@@ -169,12 +169,14 @@ impl Tool for SopExecuteTool {
                     success: true,
                     output: output.into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Failed to start SOP: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }

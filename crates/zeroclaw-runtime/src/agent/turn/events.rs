@@ -87,8 +87,7 @@ pub(crate) async fn emit_tool_result(
         .send(TurnEvent::ToolResult {
             id: id.to_string(),
             name: name.to_string(),
-            output: scrub_credentials(&outcome.output),
-        })
+            output: scrub_credentials(&outcome.output) })
         .await;
 }
 

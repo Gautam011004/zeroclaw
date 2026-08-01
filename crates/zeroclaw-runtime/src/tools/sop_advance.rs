@@ -114,6 +114,7 @@ impl Tool for SopAdvanceTool {
                     error: Some(format!(
                         "Invalid status '{other}'. Must be: completed, failed, or skipped"
                     )),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -266,12 +267,14 @@ impl Tool for SopAdvanceTool {
                     success: true,
                     output: result_output.into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Failed to advance step: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }

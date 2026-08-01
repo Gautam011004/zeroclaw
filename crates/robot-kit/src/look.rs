@@ -165,6 +165,7 @@ impl Tool for LookTool {
                     success: false,
                     output: String::new(),
                     error: Some(format!("Camera capture failed: {e}")),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -174,6 +175,7 @@ impl Tool for LookTool {
                 success: true,
                 output: format!("Image captured: {}", image_path.display()),
                 error: None,
+                attachments: Vec::new(),
             }),
             "describe" => {
                 let prompt = args["prompt"]
@@ -185,6 +187,7 @@ impl Tool for LookTool {
                         success: true,
                         output: format!("I see: {}", description),
                         error: None,
+                        attachments: Vec::new(),
                     }),
                     Err(e) => Ok(ToolResult {
                         success: false,
@@ -193,6 +196,7 @@ impl Tool for LookTool {
                             image_path.display()
                         ),
                         error: Some(e.to_string()),
+                        attachments: Vec::new(),
                     }),
                 }
             }
@@ -213,11 +217,13 @@ impl Tool for LookTool {
                         success: true,
                         output: description,
                         error: None,
+                        attachments: Vec::new(),
                     }),
                     Err(e) => Ok(ToolResult {
                         success: false,
                         output: String::new(),
                         error: Some(e.to_string()),
+                        attachments: Vec::new(),
                     }),
                 }
             }
@@ -225,6 +231,7 @@ impl Tool for LookTool {
                 success: false,
                 output: String::new(),
                 error: Some(format!("Unknown action: {action}")),
+                attachments: Vec::new(),
             }),
         }
     }

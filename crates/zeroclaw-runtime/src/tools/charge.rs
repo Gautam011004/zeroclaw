@@ -116,7 +116,6 @@ impl Tool for ChargeTool {
             "currency": currency,
             "reference": reference_pubkey.to_string(),
             "recipient": recipient,
-            "payment_qr": image,
             "status": "pending"
         });
 
@@ -124,6 +123,7 @@ impl Tool for ChargeTool {
             success: true,
             output: serde_json::to_string_pretty(&output)?.into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 }

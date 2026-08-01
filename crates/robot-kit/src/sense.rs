@@ -337,6 +337,7 @@ impl Tool for SenseTool {
                     success: true,
                     output: report,
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
 
@@ -352,6 +353,7 @@ impl Tool for SenseTool {
                     success: true,
                     output,
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
 
@@ -367,6 +369,7 @@ impl Tool for SenseTool {
                     success: true,
                     output,
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
 
@@ -383,6 +386,7 @@ impl Tool for SenseTool {
                         format!("Path ahead is BLOCKED (obstacle at {:.2}m)", scan.ranges[0])
                     },
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
 
@@ -415,6 +419,7 @@ impl Tool for SenseTool {
                     success: true,
                     output: report,
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
 
@@ -422,6 +427,7 @@ impl Tool for SenseTool {
                 success: false,
                 output: String::new(),
                 error: Some(format!("Unknown action: {action}")),
+                attachments: Vec::new(),
             }),
         }
     }

@@ -15197,6 +15197,7 @@ BTC is currently around $65,000 based on latest tool output."#
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("unexpected symbol".to_string()),
+                    attachments: Vec::new(),
                 });
             }
 
@@ -15204,6 +15205,7 @@ BTC is currently around $65,000 based on latest tool output."#
                 success: true,
                 output: r#"{"symbol":"BTC","price_usd":65000}"#.to_string().into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -15239,6 +15241,7 @@ BTC is currently around $65,000 based on latest tool output."#
                 success: true,
                 output: ToolOutput::default(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }

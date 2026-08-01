@@ -90,6 +90,7 @@ impl Tool for VerifiableIntentTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
+                attachments: Vec::new(),
             });
         }
 
@@ -103,6 +104,7 @@ impl Tool for VerifiableIntentTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("unknown operation: {operation}")),
+                attachments: Vec::new(),
             }),
         }
     }
@@ -143,6 +145,7 @@ fn execute_verify_binding(args: &serde_json::Value) -> anyhow::Result<ToolResult
             success: true,
             output: "sd_hash binding verified".into(),
             error: None,
+            attachments: Vec::new(),
         }),
         Err(e) => Ok(vi_error_result(&e)),
     }
@@ -194,7 +197,9 @@ fn execute_evaluate_constraints(
             None
         } else {
             Some("one or more constraints violated".into())
+        
         },
+        attachments: Vec::new(),
     })
 }
 
@@ -227,6 +232,7 @@ fn execute_verify_timestamps(args: &serde_json::Value) -> anyhow::Result<ToolRes
             success: true,
             output: "timestamps valid".into(),
             error: None,
+            attachments: Vec::new(),
         }),
         Err(e) => Ok(vi_error_result(&e)),
     }
@@ -237,6 +243,7 @@ fn vi_error_result(e: &ViError) -> ToolResult {
         success: false,
         output: ToolOutput::default(),
         error: Some(format!("{}", e)),
+        attachments: Vec::new(),
     }
 }
 

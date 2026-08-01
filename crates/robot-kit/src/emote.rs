@@ -299,6 +299,7 @@ impl Tool for EmoteTool {
             success: true,
             output: format!("Expressing: {} for {}s", expression_str, duration),
             error: None,
+            attachments: Vec::new(),
         })
     }
 }

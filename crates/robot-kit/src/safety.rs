@@ -411,6 +411,7 @@ impl crate::traits::Tool for SafeDrive {
                 success: false,
                 output: String::new(),
                 error: Some(format!("Safety blocked movement: {}", reason)),
+                attachments: Vec::new(),
             }),
         }
     }

@@ -158,6 +158,7 @@ impl Tool for ListenTool {
                     success: false,
                     output: String::new(),
                     error: Some(format!("Recording failed: {e}")),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -178,12 +179,14 @@ impl Tool for ListenTool {
                         success: true,
                         output: "(silence - no speech detected)".to_string(),
                         error: None,
+                        attachments: Vec::new(),
                     })
                 } else {
                     Ok(ToolResult {
                         success: true,
                         output: format!("I heard: \"{}\"", transcript),
                         error: None,
+                        attachments: Vec::new(),
                     })
                 }
             }
@@ -191,6 +194,7 @@ impl Tool for ListenTool {
                 success: false,
                 output: String::new(),
                 error: Some(format!("Transcription failed: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }

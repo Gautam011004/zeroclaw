@@ -35,6 +35,7 @@ impl DataManagementTool {
             .to_string()
             .into(),
             error: None,
+            attachments: Vec::new()
         })
     }
 
@@ -55,6 +56,7 @@ impl DataManagementTool {
             .to_string()
             .into(),
             error: None,
+            attachments: Vec::new()
         })
     }
 
@@ -71,6 +73,7 @@ impl DataManagementTool {
             .to_string()
             .into(),
             error: None,
+            attachments: Vec::new()
         })
     }
 }
@@ -111,6 +114,7 @@ impl Tool for DataManagementTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("Missing 'command' parameter".into()),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -129,6 +133,7 @@ impl Tool for DataManagementTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Unknown command: {other}")),
+                attachments: Vec::new()
             }),
         }
     }

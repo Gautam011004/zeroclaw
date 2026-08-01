@@ -119,6 +119,7 @@ impl FileEditTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("old_string must not be empty".into()),
+                attachments: Vec::new()
             });
         }
 
@@ -128,6 +129,7 @@ impl FileEditTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: autonomy is read-only".into()),
+                attachments: Vec::new()
             });
         }
 
@@ -143,6 +145,7 @@ impl FileEditTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Invalid path: missing parent directory".into()),
+                attachments: Vec::new()
             });
         };
 
@@ -153,6 +156,7 @@ impl FileEditTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to resolve file path: {e}")),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -166,6 +170,7 @@ impl FileEditTool {
                     self.security
                         .resolved_path_violation_message(&resolved_parent),
                 ),
+                attachments: Vec::new()
             });
         }
 
@@ -174,6 +179,7 @@ impl FileEditTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Invalid path: missing file name".into()),
+                attachments: Vec::new()
             });
         };
 
@@ -187,6 +193,7 @@ impl FileEditTool {
                     self.security
                         .runtime_config_violation_message(&resolved_target),
                 ),
+                attachments: Vec::new()
             });
         }
 
@@ -201,6 +208,7 @@ impl FileEditTool {
                     "Refusing to edit through symlink: {}",
                     resolved_target.display()
                 )),
+                attachments: Vec::new()
             });
         }
 
@@ -212,6 +220,7 @@ impl FileEditTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to read file: {e}")),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -223,6 +232,7 @@ impl FileEditTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(no_match_diagnostic(&content, old_string)),
+                attachments: Vec::new()
             });
         }
 
@@ -233,6 +243,7 @@ impl FileEditTool {
                 error: Some(format!(
                     "old_string matches {match_count} times; must match exactly once"
                 )),
+                attachments: Vec::new()
             });
         }
 
@@ -247,11 +258,13 @@ impl FileEditTool {
                 )
                 .into(),
                 error: None,
+                attachments: Vec::new()
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Failed to write file: {e}")),
+                attachments: Vec::new()
             }),
         }
     }

@@ -152,6 +152,7 @@ impl Tool for EscalateToHumanTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Action blocked: {e}")),
+                attachments: Vec::new()
             });
         }
 
@@ -193,6 +194,7 @@ impl Tool for EscalateToHumanTool {
                     urgency,
                     VALID_URGENCY_LEVELS.join(", ")
                 )),
+                attachments: Vec::new()
             });
         }
 
@@ -217,6 +219,7 @@ impl Tool for EscalateToHumanTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("No channels available yet (channels not initialized)".to_string()),
+                    attachments: Vec::new()
                 });
             }
             let (name, ch) = channels.iter().next().ok_or_else(|| {
@@ -241,6 +244,7 @@ impl Tool for EscalateToHumanTool {
                      so `wait_for_response` is unsupported (awaits ACP elicitation Phase 2). \
                      Retry with `wait_for_response: false`."
                 )),
+                attachments: Vec::new()
             });
         }
 
@@ -253,6 +257,7 @@ impl Tool for EscalateToHumanTool {
                 error: Some(format!(
                     "Failed to send escalation to channel '{channel_name}': {e}"
                 )),
+                attachments: Vec::new()
             });
         }
 
@@ -278,11 +283,13 @@ impl Tool for EscalateToHumanTool {
                     success: true,
                     output: msg.content.into(),
                     error: None,
+                    attachments: Vec::new()
                 }),
                 Ok(None) => Ok(ToolResult {
                     success: false,
                     output: "TIMEOUT".to_string().into(),
                     error: Some("Channel closed before receiving a response".to_string()),
+                    attachments: Vec::new()
                 }),
                 Err(_) => Ok(ToolResult {
                     success: false,
@@ -290,6 +297,7 @@ impl Tool for EscalateToHumanTool {
                     error: Some(format!(
                         "No response received within {timeout_secs} seconds"
                     )),
+                    attachments: Vec::new()
                 }),
             }
         } else {
@@ -304,6 +312,7 @@ impl Tool for EscalateToHumanTool {
                 .to_string()
                 .into(),
                 error: None,
+                attachments: Vec::new()
             })
         }
     }

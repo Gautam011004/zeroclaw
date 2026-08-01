@@ -65,6 +65,7 @@ impl Tool for GpioWriteTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("missing required parameter: pin".to_string()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -75,6 +76,7 @@ impl Tool for GpioWriteTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("missing required parameter: value".to_string()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -84,6 +86,7 @@ impl Tool for GpioWriteTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("value must be 0 or 1".to_string()),
+                attachments: Vec::new(),
             });
         }
 
@@ -98,6 +101,7 @@ impl Tool for GpioWriteTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(msg),
+                        attachments: Vec::new(),
                     });
                 }
             }
@@ -117,6 +121,7 @@ impl Tool for GpioWriteTool {
                     success: true,
                     output: format!("GPIO {} set {} on {}", pin, state, device_alias).into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Ok(resp) => Ok(ToolResult {
@@ -126,11 +131,13 @@ impl Tool for GpioWriteTool {
                     resp.error
                         .unwrap_or_else(|| "device returned ok:false".to_string()),
                 ),
+                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("transport error: {}", e)),
+                attachments: Vec::new(),
             }),
         }
     }
@@ -186,6 +193,7 @@ impl Tool for GpioReadTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("missing required parameter: pin".to_string()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -201,6 +209,7 @@ impl Tool for GpioReadTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(msg),
+                        attachments: Vec::new(),
                     });
                 }
             }
@@ -222,6 +231,7 @@ impl Tool for GpioReadTool {
                     output: format!("GPIO {} is {} ({}) on {}", pin, state, value, device_alias)
                         .into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Ok(resp) => Ok(ToolResult {
@@ -231,11 +241,13 @@ impl Tool for GpioReadTool {
                     resp.error
                         .unwrap_or_else(|| "device returned ok:false".to_string()),
                 ),
+                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("transport error: {}", e)),
+                attachments: Vec::new(),
             }),
         }
     }
