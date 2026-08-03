@@ -991,6 +991,7 @@ pub async fn run_tool_call_loop(mut p: ToolLoop<'_>) -> Result<String> {
                             duration: std::time::Duration::ZERO,
                             receipt: None,
                             output_data: None,
+                            attachments: Vec::new(),
                         },
                     ));
                 }
@@ -1016,6 +1017,7 @@ pub async fn run_tool_call_loop(mut p: ToolLoop<'_>) -> Result<String> {
                         duration: std::time::Duration::ZERO,
                         receipt: None,
                         output_data: None,
+                        attachments: Vec::new(),
                     };
                     events::emit_tool_result(tx, &call_id, &call.name, &interrupted).await;
                 }

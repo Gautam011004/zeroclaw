@@ -6404,7 +6404,9 @@ mod tests {
         let event = TurnEvent::ToolResult {
             id: "tc_1".into(),
             name: "bash".into(),
-            output: "file.txt".into() };
+            output: "file.txt".into(),
+            artifact: None
+         };
         let json = notification_for_turn_event("s1", &event, None).unwrap();
         let v = parse(&json);
         assert_eq!(v["params"]["type"], "tool_result");

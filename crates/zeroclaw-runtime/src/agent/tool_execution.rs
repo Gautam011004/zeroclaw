@@ -81,6 +81,7 @@ fn unavailable_tool_outcome(
         duration,
         receipt: None,
         output_data: None,
+        attachments: Vec::new()
     }
 }
 
@@ -101,6 +102,7 @@ pub struct ToolExecutionOutcome {
     /// Cryptographic HMAC receipt proving this tool actually executed.
     /// Present only when tool receipts are enabled in config.
     pub receipt: Option<String>,
+    pub attachments: Vec<zeroclaw_api::media::MediaAttachment>
 }
 
 // ── Single tool execution ────────────────────────────────────────────────
@@ -193,6 +195,7 @@ pub(crate) async fn execute_one_tool(
             duration,
             receipt: None,
             output_data: None,
+            attachments: Vec::new()
         });
     };
 
@@ -336,6 +339,7 @@ pub(crate) async fn execute_one_tool(
                         error_reason: None,
                         duration,
                         receipt,
+                        attachments: r.attachments
                     })
                 } else {
                     let reason = r.error.unwrap_or_else(|| r.output.into_string());
@@ -358,6 +362,7 @@ pub(crate) async fn execute_one_tool(
                         duration,
                         receipt: None,
                         output_data: None,
+                        attachments: Vec::new()
                     })
                 }
             }
@@ -397,6 +402,7 @@ pub(crate) async fn execute_one_tool(
                     duration,
                     receipt: None,
                     output_data: None,
+                    attachments: Vec::new()
                 })
             }
         }

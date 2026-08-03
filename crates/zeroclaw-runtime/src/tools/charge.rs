@@ -10,6 +10,9 @@ use solana_sdk::{
 use url::Url;
 use qrcode::QrCode;
 use image::Luma;
+use image::{DynamicImage, ImageFormat};
+use std::io::Cursor;
+use zeroclaw_api::media::MediaAttachment;
 
 pub struct ChargeTool;
 
@@ -109,6 +112,19 @@ impl Tool for ChargeTool {
                 .append_pair("spl-token", DEVNET_USDC_MINT);
         }
 
+        let mut cursor = Cursor::new(Vec::new());
+
+        DynamicImage::ImageLuma8(image).write_to(&mut cursor, ImageFormat::Png)?;
+
+        let png_bytes = cursor.into_inner();
+
+        let attachment = MediaAttachment {
+            file_name: format!("{invoice_id}.png"),
+            data: png_bytes,
+            mime_type: Some("image/png".to_string()),
+        };
+
+
         let output = json!({
             "invoice_id": invoice_id,
             "memo": memo,
@@ -119,11 +135,9 @@ impl Tool for ChargeTool {
             "status": "pending"
         });
 
-        Ok(ToolResult {
-            success: true,
-            output: serde_json::to_string_pretty(&output)?.into(),
-            error: None,
-            attachments: Vec::new(),
-        })
+        Ok(ToolResult::ok_with_attachments(
+            output,
+            vec![attachment],
+        ))
     }
 }

@@ -65,6 +65,7 @@ async fn record_duplicate_tool_call(
         duration: Duration::ZERO,
         receipt: None,
         output_data: None,
+        attachments: Vec::new(),
     }
 }
 
@@ -127,6 +128,7 @@ pub(crate) async fn prepare_tool_calls(
                         duration: Duration::ZERO,
                         receipt: None,
                         output_data: None,
+                        attachments: Vec::new(),
                     };
                     // Streaming consumers still see the call and its
                     // hook-cancel outcome as a ToolCall/ToolResult pair,
