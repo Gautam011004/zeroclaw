@@ -229,7 +229,6 @@ impl Tool for NotionTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("Missing required parameter: action".into()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -245,7 +244,6 @@ impl Tool for NotionTool {
                     error: Some(format!(
                         "Unknown action: {action}. Valid actions: query_database, read_page, create_page, update_page, search"
                     )),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -255,7 +253,6 @@ impl Tool for NotionTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
-                attachments: Vec::new(),
             });
         }
 
@@ -268,7 +265,6 @@ impl Tool for NotionTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("query_database requires database_id parameter".into()),
-                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -283,7 +279,6 @@ impl Tool for NotionTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("read_page requires page_id parameter".into()),
-                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -297,7 +292,6 @@ impl Tool for NotionTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("create_page requires properties parameter".into()),
-                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -312,7 +306,6 @@ impl Tool for NotionTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("update_page requires page_id parameter".into()),
-                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -323,7 +316,6 @@ impl Tool for NotionTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("update_page requires properties parameter".into()),
-                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -343,13 +335,11 @@ impl Tool for NotionTool {
                     .unwrap_or_else(|_| value.to_string())
                     .into(),
                 error: None,
-                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(e.to_string()),
-                attachments: Vec::new(),
             }),
         }
     }

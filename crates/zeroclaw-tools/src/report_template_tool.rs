@@ -113,7 +113,6 @@ impl Tool for ReportTemplateTool {
             success: true,
             output: rendered.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }

@@ -510,7 +510,6 @@ impl Tool for HttpRequestTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some("'auth_secret' must be a string".into()),
-                        attachments: Vec::new(),
                     });
                 }
             },
@@ -523,7 +522,6 @@ impl Tool for HttpRequestTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: autonomy is read-only".into()),
-                attachments: Vec::new(),
             });
         }
 
@@ -537,7 +535,6 @@ impl Tool for HttpRequestTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -549,7 +546,6 @@ impl Tool for HttpRequestTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -561,7 +557,6 @@ impl Tool for HttpRequestTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -570,7 +565,6 @@ impl Tool for HttpRequestTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(e.to_string()),
-                attachments: Vec::new(),
             });
         }
 
@@ -629,14 +623,12 @@ impl Tool for HttpRequestTool {
                     } else {
                         None
                     },
-                    attachments: Vec::new(),
                 })
             }
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("HTTP request failed: {e}")),
-                attachments: Vec::new(),
             }),
         }
     }

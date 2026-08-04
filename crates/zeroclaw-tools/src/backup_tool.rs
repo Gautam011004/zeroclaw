@@ -58,7 +58,6 @@ impl BackupTool {
             .to_string()
             .into(),
             error: None,
-            attachments: Vec::new()
         })
     }
 
@@ -123,7 +122,6 @@ impl BackupTool {
             success: true,
             output: serde_json::to_string_pretty(&items)?.into(),
             error: None,
-            attachments: Vec::new()
         })
     }
 
@@ -134,7 +132,6 @@ impl BackupTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Backup not found: {backup_name}")),
-                attachments: Vec::new()
             });
         }
         let manifest_path = backup_dir.join("manifest.json");
@@ -173,7 +170,6 @@ impl BackupTool {
             } else {
                 Some("Integrity check failed".into())
             },
-            attachments: Vec::new()
         })
     }
 
@@ -184,7 +180,6 @@ impl BackupTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Backup not found: {backup_name}")),
-                attachments: Vec::new()
             });
         }
 
@@ -212,7 +207,6 @@ impl BackupTool {
                 .to_string()
                 .into(),
                 error: None,
-                attachments: Vec::new()
             });
         }
 
@@ -230,7 +224,6 @@ impl BackupTool {
             .to_string()
             .into(),
             error: None,
-            attachments: Vec::new()
         })
     }
 }
@@ -275,7 +268,6 @@ impl Tool for BackupTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("Missing 'command' parameter".into()),
-                    attachments: Vec::new()
                 });
             }
         };
@@ -335,7 +327,6 @@ impl Tool for BackupTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Unknown command: {other}")),
-                attachments: Vec::new()
             }),
         }
     }

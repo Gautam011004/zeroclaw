@@ -166,13 +166,11 @@ impl Tool for SopWorkshopTool {
                 success: true,
                 output: output.into(),
                 error: None,
-                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(e.to_string()),
-                attachments: Vec::new(),
             }),
         }
     }

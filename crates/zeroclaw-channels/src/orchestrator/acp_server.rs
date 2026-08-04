@@ -4100,7 +4100,8 @@ mod tests {
             &TurnEvent::ToolResult {
                 id: "tc-12345".to_string(),
                 name: "shell".to_string(),
-                output: "file1.txt\nfile2.txt".to_string() },
+                output: "file1.txt\nfile2.txt".to_string(),
+            },
         );
         let result_value =
             serde_json::to_value(result.expect("ToolResult maps to a notification")).unwrap();

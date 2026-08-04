@@ -90,7 +90,6 @@ impl Tool for SkillsListTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to read skills directory: {e}")),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -100,7 +99,6 @@ impl Tool for SkillsListTool {
                 success: true,
                 output: "0 installed skills.".to_string().into(),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -116,7 +114,6 @@ impl Tool for SkillsListTool {
             success: true,
             output: out.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }
@@ -208,7 +205,6 @@ impl Tool for SkillViewTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -221,7 +217,6 @@ impl Tool for SkillViewTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Skill '{slug}' not found: {e}")),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -254,7 +249,6 @@ impl Tool for SkillViewTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }
@@ -365,7 +359,6 @@ impl Tool for SkillManageTool {
                 error: Some(format!(
                     "Unknown action '{other}'. Valid: patch, write_file, archive"
                 )),
-                attachments: Vec::new(),
             }),
         }
     }
@@ -429,7 +422,6 @@ impl SkillManageTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -439,7 +431,6 @@ impl SkillManageTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Skill '{slug}' not found (no SKILL.md)")),
-                attachments: Vec::new(),
             });
         }
         // Reject symlinks — the patch target must be a regular file.
@@ -450,7 +441,6 @@ impl SkillManageTool {
                 error: Some(format!(
                     "SKILL.md for '{slug}' is a symlink — refusing patch"
                 )),
-                attachments: Vec::new(),
             });
         }
         let content = args
@@ -465,7 +455,6 @@ impl SkillManageTool {
                     "patch content exceeds {MAX_FILE_BYTES} bytes ({} given)",
                     content.len()
                 )),
-                attachments: Vec::new(),
             });
         }
         let reason = args
@@ -478,7 +467,6 @@ impl SkillManageTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Skill improvement is disabled (enabled: false)".to_string()),
-                attachments: Vec::new(),
             });
         }
 
@@ -491,7 +479,6 @@ impl SkillManageTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Skill '{slug}' is on cooldown — try again later")),
-                attachments: Vec::new(),
             });
         }
 
@@ -512,21 +499,18 @@ impl SkillManageTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(err),
-                        attachments: Vec::new(),
                     });
                 }
                 Ok(ToolResult {
                     success: true,
                     output: format!("Patched skill '{slug}'.").into(),
                     error: None,
-                    attachments: Vec::new(),
                 })
             }
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Patch failed: {e}")),
-                attachments: Vec::new(),
             }),
         }
     }
@@ -539,7 +523,6 @@ impl SkillManageTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -563,7 +546,6 @@ impl SkillManageTool {
                     "file_path must start with one of: {}",
                     ALLOWED_FILE_PREFIXES.join(", ")
                 )),
-                attachments: Vec::new(),
             });
         }
         if file_path.contains("..") || file_path.contains('\0') {
@@ -571,7 +553,6 @@ impl SkillManageTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("file_path contains forbidden segment".to_string()),
-                attachments: Vec::new(),
             });
         }
         if content.len() > MAX_FILE_BYTES {
@@ -582,7 +563,6 @@ impl SkillManageTool {
                     "content exceeds {MAX_FILE_BYTES} bytes ({} given)",
                     content.len()
                 )),
-                attachments: Vec::new(),
             });
         }
 
@@ -601,7 +581,6 @@ impl SkillManageTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("file_path escapes skill directory".to_string()),
-                attachments: Vec::new(),
             });
         }
 
@@ -612,7 +591,6 @@ impl SkillManageTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("target path is a symlink — refusing write".to_string()),
-                attachments: Vec::new(),
             });
         }
 
@@ -641,7 +619,6 @@ impl SkillManageTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Post-write audit errored: {e}")),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -654,14 +631,12 @@ impl SkillManageTool {
                     "Wrote {file_path} but skill failed audit (rolled back): {}",
                     report.summary()
                 )),
-                attachments: Vec::new(),
             });
         }
         Ok(ToolResult {
             success: true,
             output: format!("Wrote {file_path} for skill '{slug}'.").into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 
@@ -674,7 +649,6 @@ impl SkillManageTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(e.to_string()),
-                        attachments: Vec::new(),
                     });
                 }
             };
@@ -693,7 +667,6 @@ impl SkillManageTool {
                 error: Some(format!(
                     "Archive directory {ARCHIVE_DIRNAME} is a symlink — refusing archive"
                 )),
-                attachments: Vec::new(),
             });
         }
         let canonical_archive_dir = archive_dir_path
@@ -704,7 +677,6 @@ impl SkillManageTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("archive directory escapes canonical skills root".to_string()),
-                attachments: Vec::new(),
             });
         }
         let target = canonical_archive_dir.join(slug);
@@ -721,7 +693,6 @@ impl SkillManageTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("archive target escapes archive directory".to_string()),
-                attachments: Vec::new(),
             });
         }
         tokio::fs::rename(&canonical_skill_dir, &final_target).await?;
@@ -729,7 +700,6 @@ impl SkillManageTool {
             success: true,
             output: format!("Archived skill '{slug}' to {}", final_target.display()).into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }

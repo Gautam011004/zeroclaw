@@ -187,7 +187,6 @@ impl WebFetchTool {
                     status.as_u16(),
                     error_body
                 )),
-                attachments: Vec::new()
             });
         }
 
@@ -216,7 +215,6 @@ impl WebFetchTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Firecrawl returned empty markdown content".into()),
-                attachments: Vec::new()
             });
         }
 
@@ -226,7 +224,6 @@ impl WebFetchTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new()
         })
     }
 
@@ -239,7 +236,6 @@ impl WebFetchTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("HTTP request failed: {e}")),
-                    attachments: Vec::new()
                 };
             }
         };
@@ -254,7 +250,6 @@ impl WebFetchTool {
                     status.as_u16(),
                     status.canonical_reason().unwrap_or("Unknown")
                 )),
-                attachments: Vec::new()
             };
         }
 
@@ -281,7 +276,6 @@ impl WebFetchTool {
                     "Unsupported content type: {content_type}. \
                      web_fetch supports text/html, text/plain, text/markdown, and application/json."
                 )),
-                attachments: Vec::new()
             };
         };
 
@@ -292,7 +286,6 @@ impl WebFetchTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to read response body: {e}")),
-                    attachments: Vec::new()
                 };
             }
         };
@@ -309,7 +302,6 @@ impl WebFetchTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new()
         }
     }
 }
@@ -359,7 +351,6 @@ impl Tool for WebFetchTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: autonomy is read-only".into()),
-                attachments: Vec::new()
             });
         }
 
@@ -373,7 +364,6 @@ impl Tool for WebFetchTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
-                    attachments: Vec::new()
                 });
             }
         };
@@ -429,7 +419,6 @@ impl Tool for WebFetchTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to build HTTP client: {e}")),
-                    attachments: Vec::new()
                 });
             }
         };
@@ -1259,7 +1248,6 @@ mod tests {
             success: false,
             output: ToolOutput::default(),
             error: Some("HTTP 403 Forbidden".into()),
-            attachments: Vec::new(),
         };
         assert!(!tool.should_fallback_to_firecrawl(&result));
     }
@@ -1274,7 +1262,6 @@ mod tests {
             success: false,
             output: ToolOutput::default(),
             error: Some("HTTP 403 Forbidden".into()),
-            attachments: Vec::new(),
         };
         assert!(tool.should_fallback_to_firecrawl(&result));
     }
@@ -1289,7 +1276,6 @@ mod tests {
             success: true,
             output: ToolOutput::default(),
             error: None,
-            attachments: Vec::new(),
         };
         assert!(tool.should_fallback_to_firecrawl(&result));
     }
@@ -1304,7 +1290,6 @@ mod tests {
             success: true,
             output: "Loading...".into(), // < 100 chars, JS-only page
             error: None,
-            attachments: Vec::new(),
         };
         assert!(tool.should_fallback_to_firecrawl(&result));
     }
@@ -1319,7 +1304,6 @@ mod tests {
             success: true,
             output: "A".repeat(200).into(), // well above 100 chars
             error: None,
-            attachments: Vec::new(),
         };
         assert!(!tool.should_fallback_to_firecrawl(&result));
     }
@@ -1386,7 +1370,6 @@ mod tests {
             success: true,
             output: "A".repeat(99).into(),
             error: None,
-            attachments: Vec::new(),
         };
         assert!(
             tool.should_fallback_to_firecrawl(&result),
@@ -1404,7 +1387,6 @@ mod tests {
             success: true,
             output: "A".repeat(100).into(),
             error: None,
-            attachments: Vec::new(),
         };
         assert!(
             !tool.should_fallback_to_firecrawl(&result),

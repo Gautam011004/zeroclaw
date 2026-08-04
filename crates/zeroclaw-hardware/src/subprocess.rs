@@ -176,7 +176,6 @@ impl Tool for SubprocessTool {
                         "plugin '{}': could not attach stdout pipe",
                         self.manifest.tool.name
                     )),
-                    attachments: Vec::new(),
                 });
             }
             Some(stdout) => {
@@ -212,7 +211,6 @@ impl Tool for SubprocessTool {
                             format!("; stderr: {}", stderr_msg)
                         }
                     )),
-                    attachments: Vec::new(),
                 })
             }
 
@@ -234,7 +232,6 @@ impl Tool for SubprocessTool {
                             format!("; stderr: {}", stderr_msg)
                         }
                     )),
-                    attachments: Vec::new(),
                 })
             }
 
@@ -263,7 +260,6 @@ impl Tool for SubprocessTool {
                                 format!("; stderr: {}", stderr_msg)
                             }
                         )),
-                        attachments: Vec::new(),
                     });
                 }
 
@@ -287,7 +283,6 @@ impl Tool for SubprocessTool {
                                         format!("; stderr: {}", stderr_msg)
                                     }
                                 )),
-                                attachments: Vec::new(),
                             });
                         }
                         Ok(result)
@@ -308,7 +303,6 @@ impl Tool for SubprocessTool {
                                 line.to_string()
                             }
                         )),
-                        attachments: Vec::new(),
                     }),
                 }
             }

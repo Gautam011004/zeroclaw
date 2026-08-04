@@ -290,7 +290,6 @@ impl Tool for PipelineTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(e.to_string()),
-                attachments: Vec::new(),
             });
         }
 
@@ -314,14 +313,12 @@ impl Tool for PipelineTool {
                     success: true,
                     output: output.into(),
                     error: None,
-                    attachments: Vec::new(),
                 })
             }
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(e.to_string()),
-                attachments: Vec::new(),
             }),
         }
     }
@@ -680,7 +677,6 @@ mod tests {
                 success: true,
                 output: self.output.clone().into(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }

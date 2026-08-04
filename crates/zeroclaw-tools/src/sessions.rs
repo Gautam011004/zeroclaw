@@ -32,7 +32,6 @@ impl SessionValidationError {
             success: false,
             output: ToolOutput::default(),
             error: Some(self.message().into()),
-            attachments: Vec::new()
         }
     }
 }
@@ -176,7 +175,6 @@ impl Tool for SessionsListTool {
                 success: true,
                 output: "No active sessions found.".into(),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -196,7 +194,6 @@ impl Tool for SessionsListTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }
@@ -251,7 +248,6 @@ impl Tool for SessionsHistoryTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
-                attachments: Vec::new(),
             });
         }
 
@@ -286,7 +282,6 @@ impl Tool for SessionsHistoryTool {
                 success: true,
                 output: format!("No messages found for session '{session_id}'.").into(),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -308,7 +303,6 @@ impl Tool for SessionsHistoryTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }
@@ -363,7 +357,6 @@ impl Tool for SessionsSendTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
-                attachments: Vec::new(),
             });
         }
 
@@ -404,7 +397,6 @@ impl Tool for SessionsSendTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Message content must not be empty.".into()),
-                attachments: Vec::new(),
             });
         }
 
@@ -417,7 +409,6 @@ impl Tool for SessionsSendTool {
                 error: Some(format!(
                     "Session '{session_id}' not found. Use sessions_list or sessions_current to choose an existing session. Gateway dashboard sessions are stored as 'gw_<session_id>'."
                 )),
-                attachments: Vec::new(),
             });
         };
 
@@ -436,14 +427,12 @@ impl Tool for SessionsSendTool {
                     success: true,
                     output: output.into(),
                     error: None,
-                    attachments: Vec::new(),
                 })
             }
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Failed to send message: {e}")),
-                attachments: Vec::new(),
             }),
         }
     }
@@ -494,7 +483,6 @@ impl Tool for SessionsCurrentTool {
                 error: Some(
                     "No active session context. This tool is only available during a gateway session.".into(),
                 ),
-                attachments: Vec::new(),
             });
         };
 
@@ -512,7 +500,6 @@ impl Tool for SessionsCurrentTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }
@@ -582,7 +569,6 @@ impl Tool for SessionResetTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
-                attachments: Vec::new(),
             });
         }
 
@@ -612,7 +598,6 @@ impl Tool for SessionResetTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(error),
-                        attachments: Vec::new(),
                     });
                 }
             },
@@ -625,20 +610,17 @@ impl Tool for SessionResetTool {
                 success: true,
                 output: format!("Session '{target_session_key}' is already empty.").into(),
                 error: None,
-                attachments: Vec::new(),
             }),
             Ok(count) => Ok(ToolResult {
                 success: true,
                 output: format!("Session '{target_session_key}' reset ({count} messages cleared).")
                     .into(),
                 error: None,
-                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Failed to reset session: {e}")),
-                attachments: Vec::new(),
             }),
         }
     }
@@ -708,7 +690,6 @@ impl Tool for SessionDeleteTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
-                attachments: Vec::new(),
             });
         }
 
@@ -738,7 +719,6 @@ impl Tool for SessionDeleteTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(error),
-                        attachments: Vec::new(),
                     });
                 }
             },
@@ -753,7 +733,6 @@ impl Tool for SessionDeleteTool {
                 success: true,
                 output: format!("Session '{target_session_key}' deleted.").into(),
                 error: None,
-                attachments: Vec::new(),
             }),
             Ok(false) if !existed => Ok(ToolResult {
                 success: true,
@@ -762,7 +741,6 @@ impl Tool for SessionDeleteTool {
                 )
                 .into(),
                 error: None,
-                attachments: Vec::new(),
             }),
             Ok(false) => Ok(ToolResult {
                 success: false,
@@ -771,13 +749,11 @@ impl Tool for SessionDeleteTool {
                     "Session '{target_session_key}' exists but could not be deleted \
                      — the storage backend may not support this operation."
                 )),
-                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Failed to delete session: {e}")),
-                attachments: Vec::new(),
             }),
         }
     }

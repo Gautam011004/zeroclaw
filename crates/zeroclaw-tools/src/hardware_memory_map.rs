@@ -85,7 +85,6 @@ impl Tool for HardwareMemoryMapTool {
                     "No peripherals configured. Add boards to config.toml [peripherals.boards]."
                         .into(),
                 ),
-                attachments: Vec::new(),
             });
         }
 
@@ -136,7 +135,6 @@ impl Tool for HardwareMemoryMapTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }

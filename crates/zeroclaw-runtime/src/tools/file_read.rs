@@ -120,7 +120,6 @@ impl FileReadTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -134,7 +133,6 @@ impl FileReadTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to resolve file path: {e}")),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -146,7 +144,6 @@ impl FileReadTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Path escapes workspace directory: {path}")),
-                attachments: Vec::new(),
             });
         }
 
@@ -161,7 +158,6 @@ impl FileReadTool {
                             "File too large: {} bytes (limit: {MAX_FILE_SIZE_BYTES} bytes)",
                             meta.len()
                         )),
-                        attachments: Vec::new(),
                     });
                 }
             }
@@ -170,7 +166,6 @@ impl FileReadTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to read file metadata: {e}")),
-                    attachments: Vec::new(),
                 });
             }
         }
@@ -190,7 +185,6 @@ impl FileReadTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Failed to read file: {e}")),
-                        attachments: Vec::new(),
                     });
                 }
             };
@@ -200,7 +194,6 @@ impl FileReadTool {
                 success: true,
                 output: encoded.into(),
                 error: None,
-                attachments: Vec::new(),
             });
         } else if encoding != "utf8" {
             return Ok(ToolResult {
@@ -209,7 +202,6 @@ impl FileReadTool {
                 error: Some(format!(
                     "Unsupported encoding '{encoding}' (expected 'utf8' or 'base64')"
                 )),
-                attachments: Vec::new(),
             });
         }
 
@@ -223,7 +215,6 @@ impl FileReadTool {
                         success: true,
                         output: ToolOutput::default(),
                         error: None,
-                        attachments: Vec::new(),
                     });
                 }
 
@@ -251,7 +242,6 @@ impl FileReadTool {
                         success: true,
                         output: format!("[No lines in range, file has {total} lines]").into(),
                         error: None,
-                        attachments: Vec::new(),
                     });
                 }
 
@@ -273,7 +263,6 @@ impl FileReadTool {
                     success: true,
                     output: format!("{numbered}{summary}").into(),
                     error: None,
-                    attachments: Vec::new(),
                 })
             }
             Err(_) => {
@@ -306,7 +295,6 @@ impl FileReadTool {
                              tool for images, or encoding=\"base64\" to read the raw bytes.",
                             resolved_path.display()
                         )),
-                        attachments: Vec::new(),
                     });
                 }
 
@@ -320,7 +308,6 @@ impl FileReadTool {
                              raw bytes.",
                             resolved_path.display()
                         )),
-                        attachments: Vec::new(),
                     });
                 }
 
@@ -332,7 +319,6 @@ impl FileReadTool {
                     success: true,
                     output: lossy.into(),
                     error: None,
-                    attachments: Vec::new(),
                 })
             }
         }

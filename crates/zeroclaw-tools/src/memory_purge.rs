@@ -70,7 +70,6 @@ impl Tool for MemoryPurgeTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
-                attachments: Vec::new(),
             });
         }
 
@@ -88,7 +87,6 @@ impl Tool for MemoryPurgeTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Failed to purge namespace: {e}")),
-                        attachments: Vec::new(),
                     });
                 }
             }
@@ -105,7 +103,6 @@ impl Tool for MemoryPurgeTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Failed to purge session: {e}")),
-                        attachments: Vec::new(),
                     });
                 }
             }
@@ -119,7 +116,6 @@ impl Tool for MemoryPurgeTool {
                 output_parts.join("; ").into()
             },
             error: None,
-            attachments: Vec::new(),
         })
     }
 }

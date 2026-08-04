@@ -126,7 +126,6 @@ impl Tool for SopApproveTool {
                     success: true,
                     output: output.into(),
                     error: None,
-                    attachments: Vec::new(),
                 })
             }
             Ok(BrokerOutcome::Resolved(ResolveOutcome::RejectedSelfApproval)) => Ok(ToolResult {
@@ -138,19 +137,16 @@ impl Tool for SopApproveTool {
                      or the dashboard."
                         .to_string(),
                 ),
-                attachments: Vec::new(),
             }),
             Ok(BrokerOutcome::Resolved(ResolveOutcome::AlreadyResolved)) => Ok(ToolResult {
                 success: true,
                 output: format!("Run {run_id} was already resolved.").into(),
                 error: None,
-                attachments: Vec::new(),
             }),
             Ok(BrokerOutcome::Resolved(ResolveOutcome::Denied)) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Run {run_id} was denied.")),
-                attachments: Vec::new(),
             }),
             // Unreachable from this tool (it only sends Approve), but a stable
             // report beats a panic if the outcome set grows another producer.
@@ -158,7 +154,6 @@ impl Tool for SopApproveTool {
                 success: true,
                 output: format!("Run {run_id} re-drafted; the gate was re-presented.").into(),
                 error: None,
-                attachments: Vec::new(),
             }),
             Ok(BrokerOutcome::Resolved(ResolveOutcome::NotWaiting))
             | Ok(BrokerOutcome::NotWaiting) => Ok(ToolResult {
@@ -167,7 +162,6 @@ impl Tool for SopApproveTool {
                 error: Some(format!(
                     "Approval failed: run {run_id} is not waiting for approval."
                 )),
-                attachments: Vec::new(),
             }),
             Ok(BrokerOutcome::Resolved(ResolveOutcome::DeferredAtCapacity)) => Ok(ToolResult {
                 success: false,
@@ -176,7 +170,6 @@ impl Tool for SopApproveTool {
                     "Approval could not resume run {run_id}: execution slots are full. \
                      The gate stays waiting and re-resolvable; retry once a slot frees."
                 )),
-                attachments: Vec::new(),
             }),
             // A quorum can record a valid vote without clearing the gate yet.
             Ok(BrokerOutcome::PendingQuorum { have, need }) => Ok(ToolResult {
@@ -187,7 +180,6 @@ impl Tool for SopApproveTool {
                 )
                 .into(),
                 error: None,
-                attachments: Vec::new(),
             }),
             Ok(BrokerOutcome::NotAuthorized { required_group }) => Ok(ToolResult {
                 success: false,
@@ -196,7 +188,6 @@ impl Tool for SopApproveTool {
                     "Not authorized: approving this step requires membership in the \
                      '{required_group}' group."
                 )),
-                attachments: Vec::new(),
             }),
             // Fail closed: the step names an approval policy absent from config, so
             // the gate is left waiting rather than cleared.
@@ -207,7 +198,6 @@ impl Tool for SopApproveTool {
                     "Approval failed: step names approval policy '{name}', which is not \
                      defined in [sop.approval].policies; the gate is left waiting."
                 )),
-                attachments: Vec::new(),
             }),
             Ok(BrokerOutcome::PolicyUnavailable { reason }) => Ok(ToolResult {
                 success: false,
@@ -216,13 +206,11 @@ impl Tool for SopApproveTool {
                     "sop-approval-policy-unavailable",
                     &[("reason", reason.as_str())],
                 )),
-                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Approval failed: {e}")),
-                attachments: Vec::new(),
             }),
         }
     }

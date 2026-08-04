@@ -202,7 +202,6 @@ impl Tool for ScheduleTool {
                 error: Some(format!(
                     "Unknown action '{other}'. Use create/add/once/list/get/cancel/remove/pause/resume."
                 )),
-                attachments: Vec::new(),
             }),
         }
     }
@@ -217,7 +216,6 @@ impl ScheduleTool {
                 error: Some(format!(
                     "cron is disabled by config (scheduler.enabled=false); cannot perform '{action}'"
                 )),
-                attachments: Vec::new(),
             });
         }
 
@@ -228,7 +226,6 @@ impl ScheduleTool {
                 error: Some(format!(
                     "Security policy: read-only mode, cannot perform '{action}'"
                 )),
-                attachments: Vec::new(),
             });
         }
 
@@ -237,7 +234,6 @@ impl ScheduleTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Rate limit exceeded: action budget exhausted".to_string()),
-                attachments: Vec::new(),
             });
         }
 
@@ -251,7 +247,6 @@ impl ScheduleTool {
                 success: true,
                 output: "No scheduled jobs.".to_string().into(),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -285,7 +280,6 @@ impl ScheduleTool {
             success: true,
             output: format!("Scheduled jobs ({}):\n{}", lines.len(), lines.join("\n")).into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 
@@ -306,14 +300,12 @@ impl ScheduleTool {
                     success: true,
                     output: serde_json::to_string_pretty(&detail)?.into(),
                     error: None,
-                    attachments: Vec::new(),
                 })
             }
             Err(_) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Job '{id}' not found")),
-                attachments: Vec::new(),
             }),
         }
     }
@@ -351,7 +343,6 @@ impl ScheduleTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some("'add' requires 'expression' and forbids delay/run_at".into()),
-                        attachments: Vec::new(),
                     });
                 }
             }
@@ -361,7 +352,6 @@ impl ScheduleTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some("'once' requires exactly one of 'delay' or 'run_at'".into()),
-                        attachments: Vec::new(),
                     });
                 }
                 if delay.is_some() && run_at.is_some() {
@@ -369,7 +359,6 @@ impl ScheduleTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some("'once' supports either delay or run_at, not both".into()),
-                        attachments: Vec::new(),
                     });
                 }
             }
@@ -386,7 +375,6 @@ impl ScheduleTool {
                             "Exactly one of 'expression', 'delay', or 'run_at' must be provided"
                                 .into(),
                         ),
-                        attachments: Vec::new(),
                     });
                 }
             }
@@ -419,7 +407,6 @@ impl ScheduleTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(error.to_string()),
-                        attachments: Vec::new(),
                     });
                 }
             };
@@ -434,7 +421,6 @@ impl ScheduleTool {
                 )
                 .into(),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -452,7 +438,6 @@ impl ScheduleTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(error.to_string()),
-                        attachments: Vec::new(),
                     });
                 }
             };
@@ -466,7 +451,6 @@ impl ScheduleTool {
                 )
                 .into(),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -508,7 +492,6 @@ impl ScheduleTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(error.to_string()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -522,7 +505,6 @@ impl ScheduleTool {
             )
             .into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 
@@ -532,13 +514,11 @@ impl ScheduleTool {
                 success: true,
                 output: format!("Cancelled job {id}").into(),
                 error: None,
-                attachments: Vec::new(),
             },
             Err(error) => ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error.to_string()),
-                attachments: Vec::new(),
             },
         }
     }
@@ -559,13 +539,11 @@ impl ScheduleTool {
                     format!("Resumed job {id}").into()
                 },
                 error: None,
-                attachments: Vec::new(),
             },
             Err(error) => ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error.to_string()),
-                attachments: Vec::new(),
             },
         }
     }

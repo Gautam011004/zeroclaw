@@ -4175,7 +4175,6 @@ mod tests {
                 success: true,
                 output: tools::ToolOutput::default(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }

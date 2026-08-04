@@ -68,7 +68,6 @@ impl ModelRoutingConfigTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: autonomy is read-only".into()),
-                attachments: Vec::new(),
             });
         }
 
@@ -77,7 +76,6 @@ impl ModelRoutingConfigTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: rate limit exceeded".into()),
-                attachments: Vec::new(),
             });
         }
 
@@ -478,7 +476,6 @@ impl ModelRoutingConfigTool {
             success: true,
             output: serde_json::to_string_pretty(&Self::snapshot(&cfg))?.into(),
             error: None,
-            attachments: Vec::new()
         })
     }
 
@@ -525,7 +522,6 @@ impl ModelRoutingConfigTool {
             }))?
             .into(),
             error: None,
-            attachments: Vec::new()
         })
     }
 
@@ -637,7 +633,6 @@ impl ModelRoutingConfigTool {
                         "Model '{model_name}' is not available: {probe_err}. Reverted to '{reverted_model}'.",
                     ).into(),
                     error: None,
-                    attachments: Vec::new()
                 });
             }
             // Retryable errors (e.g. transient network issues) — keep the
@@ -653,7 +648,6 @@ impl ModelRoutingConfigTool {
             }))?
             .into(),
             error: None,
-            attachments: Vec::new()
         })
     }
 
@@ -827,7 +821,6 @@ impl ModelRoutingConfigTool {
             }))?
             .into(),
             error: None,
-            attachments: Vec::new()
         })
     }
 
@@ -874,7 +867,6 @@ impl ModelRoutingConfigTool {
             }))?
             .into(),
             error: None,
-            attachments: Vec::new()
         })
     }
 
@@ -1002,7 +994,6 @@ impl ModelRoutingConfigTool {
             }))?
             .into(),
             error: None,
-            attachments: Vec::new()
         })
     }
 
@@ -1025,7 +1016,6 @@ impl ModelRoutingConfigTool {
             }))?
             .into(),
             error: None,
-            attachments: Vec::new()
         })
     }
 }
@@ -1211,7 +1201,6 @@ impl Tool for ModelRoutingConfigTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error.to_string()),
-                attachments: Vec::new()
             }),
         }
     }

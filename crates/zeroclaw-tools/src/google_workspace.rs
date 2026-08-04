@@ -232,7 +232,6 @@ impl Tool for GoogleWorkspaceTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some("'sub_resource' must be a string".into()),
-                        attachments: Vec::new(),
                     });
                 }
             };
@@ -247,7 +246,6 @@ impl Tool for GoogleWorkspaceTool {
                         "Invalid characters in 'sub_resource': only lowercase alphanumeric, underscore, and hyphen are allowed"
                             .into(),
                     ),
-                    attachments: Vec::new(),
                 });
             }
             Some(s)
@@ -261,7 +259,6 @@ impl Tool for GoogleWorkspaceTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Rate limit exceeded: too many actions in the last hour".into()),
-                attachments: Vec::new(),
             });
         }
 
@@ -275,7 +272,6 @@ impl Tool for GoogleWorkspaceTool {
                      Allowed: {}",
                     self.allowed_services.join(", ")
                 )),
-                attachments: Vec::new(),
             });
         }
 
@@ -290,7 +286,6 @@ impl Tool for GoogleWorkspaceTool {
                 error: Some(format!(
                     "Operation '{op_path}' is not in the allowed operations list"
                 )),
-                attachments: Vec::new(),
             });
         }
 
@@ -310,7 +305,6 @@ impl Tool for GoogleWorkspaceTool {
                     error: Some(format!(
                         "Invalid characters in '{label}': only lowercase alphanumeric, underscore, and hyphen are allowed"
                     )),
-                    attachments: Vec::new(),
                 });
             }
         }
@@ -324,7 +318,6 @@ impl Tool for GoogleWorkspaceTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("'params' must be an object".into()),
-                    attachments: Vec::new(),
                 });
             }
             cmd_args.push("--params".into());
@@ -337,7 +330,6 @@ impl Tool for GoogleWorkspaceTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("'body' must be an object".into()),
-                    attachments: Vec::new(),
                 });
             }
             cmd_args.push("--json".into());
@@ -352,7 +344,6 @@ impl Tool for GoogleWorkspaceTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some("'format' must be a string".into()),
-                        attachments: Vec::new(),
                     });
                 }
             };
@@ -368,7 +359,6 @@ impl Tool for GoogleWorkspaceTool {
                         error: Some(format!(
                             "Invalid format '{format}': must be json, table, yaml, or csv"
                         )),
-                        attachments: Vec::new(),
                     });
                 }
             }
@@ -382,7 +372,6 @@ impl Tool for GoogleWorkspaceTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some("'page_all' must be a boolean".into()),
-                        attachments: Vec::new(),
                     });
                 }
             },
@@ -396,7 +385,6 @@ impl Tool for GoogleWorkspaceTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some("'page_limit' must be a non-negative integer".into()),
-                        attachments: Vec::new(),
                     });
                 }
             },
@@ -410,7 +398,6 @@ impl Tool for GoogleWorkspaceTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Rate limit exceeded: action budget exhausted".into()),
-                attachments: Vec::new(),
             });
         }
 
@@ -477,7 +464,6 @@ impl Tool for GoogleWorkspaceTool {
                     } else {
                         Some(stderr)
                     },
-                    attachments: Vec::new(),
                 })
             }
             Ok(Err(e)) => Ok(ToolResult {
@@ -486,7 +472,6 @@ impl Tool for GoogleWorkspaceTool {
                 error: Some(format!(
                     "Failed to execute gws: {e}. Is gws installed? Run: npm install -g @googleworkspace/cli"
                 )),
-                attachments: Vec::new(),
             }),
             Err(_) => Ok(ToolResult {
                 success: false,
@@ -495,7 +480,6 @@ impl Tool for GoogleWorkspaceTool {
                     "gws command timed out after {}s and was killed",
                     self.timeout_secs
                 )),
-                attachments: Vec::new(),
             }),
         }
     }

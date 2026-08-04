@@ -1,5 +1,3 @@
-use serde::{Deserialize, Serialize};
-
 /// Classifies an attachment by MIME type or file extension.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MediaKind {
@@ -10,7 +8,7 @@ pub enum MediaKind {
 }
 
 /// A single media attachment on an inbound message.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone)]
 pub struct MediaAttachment {
     /// Original file name (e.g. `voice.ogg`, `photo.jpg`).
     pub file_name: String,

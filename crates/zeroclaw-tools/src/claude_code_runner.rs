@@ -105,7 +105,6 @@ impl Tool for ClaudeCodeRunnerTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
-                attachments: Vec::new()
             });
         }
 
@@ -140,7 +139,6 @@ impl Tool for ClaudeCodeRunnerTool {
                             "working_directory '{}' does not exist or is not accessible",
                             wd
                         )),
-                        attachments: Vec::new()
                     });
                 }
             };
@@ -154,7 +152,6 @@ impl Tool for ClaudeCodeRunnerTool {
                             "workspace directory '{}' does not exist or is not accessible",
                             workspace.display()
                         )),
-                        attachments: Vec::new()
                     });
                 }
             };
@@ -167,7 +164,6 @@ impl Tool for ClaudeCodeRunnerTool {
                         wd,
                         workspace.display()
                     )),
-                    attachments: Vec::new()
                 });
             }
             canonical_wd
@@ -237,7 +233,6 @@ impl Tool for ClaudeCodeRunnerTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to create tmux session: {stderr}")),
-                    attachments: Vec::new()
                 });
             }
             Err(e) => {
@@ -247,7 +242,6 @@ impl Tool for ClaudeCodeRunnerTool {
                     error: Some(format!(
                         "tmux not found or failed to execute: {e}. Install tmux to use claude_code_runner."
                     )),
-                    attachments: Vec::new()
                 });
             }
             _ => {}
@@ -279,7 +273,6 @@ impl Tool for ClaudeCodeRunnerTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Failed to send command to tmux session: {e}")),
-                attachments: Vec::new()
             });
         }
 
@@ -323,7 +316,6 @@ impl Tool for ClaudeCodeRunnerTool {
             success: true,
             output: output_parts.join("\n").into(),
             error: None,
-            attachments: Vec::new()
         })
     }
 }

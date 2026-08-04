@@ -61,7 +61,6 @@ impl Tool for MemoryForgetTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
-                attachments: Vec::new(),
             });
         }
 
@@ -70,19 +69,16 @@ impl Tool for MemoryForgetTool {
                 success: true,
                 output: format!("Forgot memory: {key}").into(),
                 error: None,
-                attachments: Vec::new(),
             }),
             Ok(false) => Ok(ToolResult {
                 success: true,
                 output: format!("No memory found with key: {key}").into(),
                 error: None,
-                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Failed to forget memory: {e}")),
-                attachments: Vec::new(),
             }),
         }
     }

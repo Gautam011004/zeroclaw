@@ -165,7 +165,6 @@ impl Tool for EmailReadTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new()
         })
     }
 }

@@ -182,7 +182,6 @@ mod tests {
                 success: true,
                 output: "counted".into(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }

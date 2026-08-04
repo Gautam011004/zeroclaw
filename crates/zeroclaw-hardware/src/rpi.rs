@@ -425,7 +425,6 @@ impl Tool for GpioRpiWriteTool {
                 success: true,
                 output: format!("ACT LED (GPIO {}) → {} (via sysfs)", pin, state).into(),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -448,7 +447,6 @@ impl Tool for GpioRpiWriteTool {
             success: true,
             output: format!("GPIO {} → {}", pin, state).into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }
@@ -514,7 +512,6 @@ impl Tool for GpioRpiReadTool {
                     .to_string()
                     .into(),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -533,7 +530,6 @@ impl Tool for GpioRpiReadTool {
             success: true,
             output: json!({ "pin": pin, "value": value, "state": if value == 0 { "LOW" } else { "HIGH" } }).to_string().into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }
@@ -632,7 +628,6 @@ impl Tool for GpioRpiBlinkTool {
                 )
                 .into(),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -654,7 +649,6 @@ impl Tool for GpioRpiBlinkTool {
             success: true,
             output: format!("Blinked GPIO {} × {} ({}/{}ms)", pin, times, on_ms, off_ms).into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }
@@ -710,7 +704,6 @@ impl Tool for RpiSystemInfoTool {
             success: true,
             output: info.to_string().into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }

@@ -162,7 +162,6 @@ impl Tool for ToolSearchTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("query parameter is required".into()),
-                attachments: Vec::new(),
             });
         }
 
@@ -187,7 +186,6 @@ impl Tool for ToolSearchTool {
                 success: true,
                 output: "No matching deferred tools found.".into(),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -265,7 +263,6 @@ impl Tool for ToolSearchTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }
@@ -352,7 +349,6 @@ impl ToolSearchTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }

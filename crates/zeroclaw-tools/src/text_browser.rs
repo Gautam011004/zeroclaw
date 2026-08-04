@@ -260,7 +260,6 @@ impl Tool for TextBrowserTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: autonomy is read-only".into()),
-                attachments: Vec::new(),
             });
         }
 
@@ -269,7 +268,6 @@ impl Tool for TextBrowserTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: rate limit exceeded".into()),
-                attachments: Vec::new(),
             });
         }
 
@@ -280,7 +278,6 @@ impl Tool for TextBrowserTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -294,7 +291,6 @@ impl Tool for TextBrowserTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -330,7 +326,6 @@ impl Tool for TextBrowserTool {
                         success: true,
                         output: text.into(),
                         error: None,
-                        attachments: Vec::new(),
                     })
                 } else {
                     let stderr = String::from_utf8_lossy(&output.stderr);
@@ -342,7 +337,6 @@ impl Tool for TextBrowserTool {
                             output.status,
                             stderr.trim()
                         )),
-                        attachments: Vec::new(),
                     })
                 }
             }
@@ -350,7 +344,6 @@ impl Tool for TextBrowserTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Failed to execute {browser}: {e}")),
-                attachments: Vec::new(),
             }),
             Err(_) => Ok(ToolResult {
                 success: false,
@@ -359,7 +352,6 @@ impl Tool for TextBrowserTool {
                     "{browser} timed out after {} seconds",
                     timeout.as_secs()
                 )),
-                attachments: Vec::new(),
             }),
         }
     }

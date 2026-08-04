@@ -334,7 +334,6 @@ mod tests {
                     success: true,
                     output: ToolOutput::default(),
                     error: None,
-                    attachments: Vec::new(),
                 })
             }
         }
@@ -379,7 +378,6 @@ mod tests {
                     success: true,
                     output: ToolOutput::default(),
                     error: None,
-                    attachments: Vec::new(),
                 })
             }
         }
@@ -421,7 +419,6 @@ mod tests {
                     success: true,
                     output: ToolOutput::default(),
                     error: None,
-                    attachments: Vec::new(),
                 })
             }
         }

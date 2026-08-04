@@ -224,7 +224,6 @@ impl Tool for SendViaTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Action blocked: {e}")),
-                attachments: Vec::new(),
             });
         }
 
@@ -262,7 +261,6 @@ impl Tool for SendViaTool {
                             "reason": "`target` is required when `body` is present"
                         })),
                         error: None,
-                        attachments: Vec::new(),
                     });
                 }
             };
@@ -279,7 +277,6 @@ impl Tool for SendViaTool {
                                 "reason": reason
                             })),
                             error: None,
-                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -298,7 +295,6 @@ impl Tool for SendViaTool {
                                        cannot determine send recipient"
                         })),
                         error: None,
-                        attachments: Vec::new(),
                     });
                 }
             };
@@ -320,7 +316,6 @@ impl Tool for SendViaTool {
                         "status": "ok"
                     })),
                     error: None,
-                    attachments: Vec::new(),
                 }),
                 Err(e) => Ok(ToolResult {
                     success: false,
@@ -330,7 +325,6 @@ impl Tool for SendViaTool {
                         "reason": e.to_string()
                     })),
                     error: None,
-                    attachments: Vec::new(),
                 }),
             };
         }
@@ -344,7 +338,6 @@ impl Tool for SendViaTool {
                     "reason": "at least one of `target` or `modality` is required when `body` is absent"
                 })),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -366,7 +359,6 @@ impl Tool for SendViaTool {
                                            cannot determine routing recipient"
                             })),
                             error: None,
-                            attachments: Vec::new(),
                         });
                     }
                     (
@@ -384,7 +376,6 @@ impl Tool for SendViaTool {
                             "reason": reason
                         })),
                         error: None,
-                        attachments: Vec::new(),
                     });
                 }
             }
@@ -423,7 +414,6 @@ impl Tool for SendViaTool {
                     "reason": "routing is only available while handling a channel turn"
                 })),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -436,7 +426,6 @@ impl Tool for SendViaTool {
                 "status": "queued"
             })),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }

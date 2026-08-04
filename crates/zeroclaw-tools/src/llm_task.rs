@@ -98,7 +98,6 @@ impl Tool for LlmTaskTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
-                attachments: Vec::new(),
             });
         }
 
@@ -110,7 +109,6 @@ impl Tool for LlmTaskTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("Missing or empty required parameter: prompt".to_string()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -155,7 +153,6 @@ impl Tool for LlmTaskTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Failed to create model_provider: {e}")),
-                        attachments: Vec::new(),
                     });
                 }
             };
@@ -173,7 +170,6 @@ impl Tool for LlmTaskTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("LLM call failed: {e}")),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -186,13 +182,11 @@ impl Tool for LlmTaskTool {
                     success: true,
                     output: validated_json.into(),
                     error: None,
-                    attachments: Vec::new(),
                 }),
                 Err(validation_error) => Ok(ToolResult {
                     success: false,
                     output: response.into(),
                     error: Some(format!("Schema validation failed: {validation_error}")),
-                    attachments: Vec::new(),
                 }),
             }
         } else {
@@ -200,7 +194,6 @@ impl Tool for LlmTaskTool {
                 success: true,
                 output: response.into(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }

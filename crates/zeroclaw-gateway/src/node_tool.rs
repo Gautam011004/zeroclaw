@@ -91,7 +91,6 @@ impl Tool for NodeTool {
                         "Capability '{}' requires approval. Set approved=true to proceed.",
                         self.capability_name
                     )),
-                    attachments: Vec::new(),
                 });
             }
         }
@@ -113,7 +112,6 @@ impl Tool for NodeTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Node '{}' is not connected", self.node_id)),
-                        attachments: Vec::new(),
                     });
                 }
             };
@@ -136,7 +134,6 @@ impl Tool for NodeTool {
                     "Failed to send invocation to node '{}'",
                     self.node_id
                 )),
-                attachments: Vec::new(),
             });
         }
 
@@ -147,7 +144,6 @@ impl Tool for NodeTool {
                 success: result.success,
                 output: result.output.into(),
                 error: result.error,
-                attachments: Vec::new(),
             }),
             Ok(Err(_)) => Ok(ToolResult {
                 success: false,
@@ -156,7 +152,6 @@ impl Tool for NodeTool {
                     "Node '{}' dropped the invocation channel",
                     self.node_id
                 )),
-                attachments: Vec::new(),
             }),
             Err(_) => Ok(ToolResult {
                 success: false,
@@ -165,7 +160,6 @@ impl Tool for NodeTool {
                     "Node '{}' invocation timed out after {NODE_INVOKE_TIMEOUT_SECS}s",
                     self.node_id
                 )),
-                attachments: Vec::new(),
             }),
         }
     }

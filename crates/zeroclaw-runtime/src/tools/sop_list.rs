@@ -62,7 +62,6 @@ impl Tool for SopListTool {
                 success: true,
                 output: "No SOPs loaded.".into(),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -82,7 +81,6 @@ impl Tool for SopListTool {
                 success: true,
                 output: format!("No SOPs match filter '{filter}'.").into(),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -120,7 +118,6 @@ impl Tool for SopListTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }

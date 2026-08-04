@@ -64,7 +64,6 @@ impl Tool for OpenCodeCliTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
-                attachments: Vec::new(),
             });
         }
 
@@ -102,7 +101,6 @@ impl Tool for OpenCodeCliTool {
                             "working_directory '{}' does not exist or is not accessible",
                             wd
                         )),
-                        attachments: Vec::new(),
                     });
                 }
             };
@@ -116,7 +114,6 @@ impl Tool for OpenCodeCliTool {
                             "workspace directory '{}' does not exist or is not accessible",
                             workspace.display()
                         )),
-                        attachments: Vec::new(),
                     });
                 }
             };
@@ -129,7 +126,6 @@ impl Tool for OpenCodeCliTool {
                         wd,
                         workspace.display()
                     )),
-                    attachments: Vec::new(),
                 });
             }
             canonical_wd
@@ -189,7 +185,6 @@ impl Tool for OpenCodeCliTool {
                     } else {
                         Some(stderr)
                     },
-                    attachments: Vec::new(),
                 })
             }
             Ok(Err(e)) => {
@@ -206,7 +201,6 @@ impl Tool for OpenCodeCliTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(msg),
-                    attachments: Vec::new(),
                 })
             }
             Err(_) => {
@@ -219,7 +213,6 @@ impl Tool for OpenCodeCliTool {
                         "OpenCode CLI timed out after {}s and was killed",
                         self.config.timeout_secs
                     )),
-                    attachments: Vec::new(),
                 })
             }
         }

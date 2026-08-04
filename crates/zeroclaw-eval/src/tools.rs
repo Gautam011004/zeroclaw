@@ -47,7 +47,6 @@ impl Tool for EchoTool {
             success: true,
             output: msg.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }

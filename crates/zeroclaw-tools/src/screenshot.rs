@@ -76,7 +76,6 @@ impl ScreenshotTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Filename contains characters unsafe for shell execution".into()),
-                attachments: Vec::new()
             });
         }
 
@@ -88,7 +87,6 @@ impl ScreenshotTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Screenshot not supported on this platform".into()),
-                attachments: Vec::new()
             });
         };
 
@@ -124,14 +122,12 @@ impl ScreenshotTool {
                                 "No screenshot tool found. Install gnome-screenshot, scrot, or ImageMagick."
                                     .into(),
                             ),
-                            attachments: Vec::new()
                         });
                     }
                     return Ok(ToolResult {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Screenshot command failed: {stderr}")),
-                        attachments: Vec::new()
                     });
                 }
 
@@ -141,7 +137,6 @@ impl ScreenshotTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Failed to execute screenshot command: {e}")),
-                attachments: Vec::new()
             }),
             Err(_) => Ok(ToolResult {
                 success: false,
@@ -149,7 +144,6 @@ impl ScreenshotTool {
                 error: Some(format!(
                     "Screenshot timed out after {SCREENSHOT_TIMEOUT_SECS}s"
                 )),
-                attachments: Vec::new()
             }),
         }
     }
@@ -170,7 +164,6 @@ impl ScreenshotTool {
                 )
                 .into(),
                 error: None,
-                attachments: Vec::new()
             });
         }
 
@@ -211,14 +204,12 @@ impl ScreenshotTool {
                     success: true,
                     output: output_msg.into(),
                     error: None,
-                    attachments: Vec::new()
                 })
             }
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: format!("Screenshot saved to: {}", output_path.display()).into(),
                 error: Some(format!("Failed to read screenshot file: {e}")),
-                attachments: Vec::new()
             }),
         }
     }
@@ -256,7 +247,6 @@ impl Tool for ScreenshotTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: autonomy is read-only".into()),
-                attachments: Vec::new()
             });
         }
         self.capture(args).await

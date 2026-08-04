@@ -48,7 +48,6 @@ impl Tool for CronRunTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("cron is disabled by config (scheduler.enabled=false)".to_string()),
-                attachments: Vec::new(),
             });
         }
 
@@ -59,7 +58,6 @@ impl Tool for CronRunTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("Missing 'job_id' parameter".to_string()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -73,7 +71,6 @@ impl Tool for CronRunTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Security policy: read-only mode, cannot perform 'cron_run'".into()),
-                attachments: Vec::new(),
             });
         }
 
@@ -82,7 +79,6 @@ impl Tool for CronRunTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Rate limit exceeded: too many actions in the last hour".into()),
-                attachments: Vec::new(),
             });
         }
 
@@ -93,7 +89,6 @@ impl Tool for CronRunTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -107,7 +102,6 @@ impl Tool for CronRunTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(reason),
-                attachments: Vec::new(),
             });
         }
 
@@ -116,7 +110,6 @@ impl Tool for CronRunTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Rate limit exceeded: action budget exhausted".into()),
-                attachments: Vec::new(),
             });
         }
 
@@ -141,9 +134,7 @@ impl Tool for CronRunTool {
                 None
             } else {
                 Some("cron job execution failed".to_string())
-            
             },
-            attachments: Vec::new(),
         })
     }
 }

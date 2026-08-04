@@ -148,7 +148,6 @@ impl Tool for EchoTool {
             success: true,
             output: msg.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }
@@ -175,7 +174,6 @@ impl Tool for FailingTool {
             success: false,
             output: ToolOutput::default(),
             error: Some("intentional failure".into()),
-            attachments: Vec::new(),
         })
     }
 }
@@ -240,7 +238,6 @@ impl Tool for CountingTool {
             success: true,
             output: format!("call #{}", *c).into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }

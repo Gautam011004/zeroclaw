@@ -2532,7 +2532,6 @@ mod sop_step_reassembly_tests {
                 success: true,
                 output: "shell-out".to_string().into(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }
@@ -2700,7 +2699,6 @@ mod sop_step_reassembly_tests {
                 success: true,
                 output: "ok".to_string().into(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }
@@ -3374,7 +3372,6 @@ mod sop_step_reassembly_tests {
                 success: true,
                 output: "switch queued".to_string().into(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }

@@ -112,7 +112,6 @@ impl ProjectIntelTool {
             success: true,
             output: rendered.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 
@@ -220,7 +219,6 @@ impl ProjectIntelTool {
             success: true,
             output: tpl.render(&vars).into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 
@@ -298,7 +296,6 @@ impl ProjectIntelTool {
             success: true,
             output: body.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 
@@ -340,7 +337,6 @@ impl ProjectIntelTool {
             success: true,
             output: tpl.render(&vars).into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 
@@ -352,7 +348,6 @@ impl ProjectIntelTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("No task descriptions provided".into()),
-                attachments: Vec::new(),
             });
         }
 
@@ -375,7 +370,6 @@ impl ProjectIntelTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }
@@ -569,7 +563,6 @@ impl Tool for ProjectIntelTool {
                 error: Some(format!(
                     "Unknown action '{other}'. Valid actions: status_report, risk_scan, draft_update, sprint_summary, effort_estimate"
                 )),
-                attachments: Vec::new(),
             }),
         }
     }

@@ -123,14 +123,12 @@ impl Tool for TodoWriteTool {
                     success: true,
                     output: format!("{total} todos tracked ({done} done)").into(),
                     error: None,
-                    attachments: Vec::new(),
                 })
             }
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: String::new().into(),
                 error: Some(e.to_string()),
-                attachments: Vec::new(),
             }),
         }
     }

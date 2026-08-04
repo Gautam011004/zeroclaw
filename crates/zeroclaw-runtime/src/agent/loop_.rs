@@ -4760,7 +4760,6 @@ mod tests {
                 success: true,
                 output: format!("counted:{value}").into(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }
@@ -4841,7 +4840,6 @@ mod tests {
                 success: true,
                 output: "api_key = \"sk-live-abcd1234efgh5678\"".to_string().into(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }
@@ -4873,7 +4871,6 @@ mod tests {
                 success: true,
                 output: crate::tools::ToolOutput::default(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }
@@ -4925,7 +4922,6 @@ mod tests {
                 success: true,
                 output: args.to_string().into(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }
@@ -4994,7 +4990,6 @@ mod tests {
                 success: true,
                 output: format!("ok:{value}").into(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }
@@ -5041,7 +5036,6 @@ mod tests {
                 success: false,
                 output: crate::tools::ToolOutput::default(),
                 error: Some(self.error_reason.clone()),
-                attachments: Vec::new(),
             })
         }
     }
@@ -6751,7 +6745,6 @@ mod tests {
                 success: true,
                 output: "fast-done".to_string().into(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }
@@ -11734,7 +11727,6 @@ This is an example, not an invocation."#;
                 success: true,
                 output: output.into(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }
@@ -14692,7 +14684,6 @@ Let me check the result."#;
                 success: true,
                 output: crate::tools::ToolOutput::default(),
                 error: None,
-                attachments: Vec::new(),
             })
         }
     }

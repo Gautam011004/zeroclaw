@@ -138,7 +138,6 @@ impl Tool for SendMessageToPeerTool {
                      add a [peer_groups.<name>] entry that lists both this agent and the target before sending",
                     alias = self.sender_alias,
                 )),
-                attachments: Vec::new(),
             });
         }
 
@@ -160,7 +159,6 @@ impl Tool for SendMessageToPeerTool {
                      add the channel ref to [agents.{alias}.channels] before sending",
                     alias = self.sender_alias,
                 )),
-                attachments: Vec::new(),
             });
         }
 
@@ -208,7 +206,6 @@ impl Tool for SendMessageToPeerTool {
                     "accepted for in-process delivery to peer agent {canonical:?} (recipient runs detached; observe its agent loop for the actual outcome)"
                 ).into(),
                 error: None,
-                attachments: Vec::new(),
             });
         }
 
@@ -217,13 +214,11 @@ impl Tool for SendMessageToPeerTool {
                 success: true,
                 output: format!("delivered to external peer {target:?} on {channel}").into(),
                 error: None,
-                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("delivery failed: {e:#}")),
-                attachments: Vec::new(),
             }),
         }
     }
