@@ -324,6 +324,7 @@ enum ChannelRuntimeCommand {
     NewSession,
     SetThinking(Option<ThinkingLevel>),
     InvalidThinking(String),
+    
 }
 
 #[derive(Debug, Clone, Default, Deserialize)]
@@ -5901,12 +5902,8 @@ async fn process_channel_message_body(
                         let _ = orig_ch.cancel_draft(&msg.reply_target, draft_id).await;
                     }
                     let suppress = suppress_voice_override.unwrap_or(false);
-                    let attachments = zeroclaw_api::attachments::take_attachments();
                     let mut send_msg = SendMessage::new(&delivered_response, &delivery_recipient)
                         .in_thread(msg.thread_ts.clone());
-                    if !attachments.is_empty() {
-                        send_msg = send_msg.with_attachments(attachments);
-                    }
                     if suppress {
                         send_msg = send_msg.suppress_voice();
                     } else if force_voice_override {
@@ -5920,17 +5917,14 @@ async fn process_channel_message_body(
                     // force_voice concept).
                     if force_voice_override {
                         let _ = channel.cancel_draft(&delivery_recipient, draft_id).await;
-                        let attachments = zeroclaw_api::attachments::take_attachments();
-
-                        let mut send_msg = SendMessage::new(&delivered_response, &delivery_recipient)
-                            .force_voice()
-                            .in_thread(msg.thread_ts.clone());
-
-                        if !attachments.is_empty() {
-                            send_msg = send_msg.with_attachments(attachments);
-                        }
-
-                        channel.send(&send_msg).await.is_ok()
+                        channel
+                            .send(
+                                &SendMessage::new(&delivered_response, &delivery_recipient)
+                                    .force_voice()
+                                    .in_thread(msg.thread_ts.clone()),
+                            )
+                            .await
+                            .is_ok()
                     } else {
                         let suppress = suppress_voice_override.unwrap_or(false);
                         match channel
@@ -5954,18 +5948,10 @@ async fn process_channel_message_body(
                                     .with_attrs(::serde_json::json!({"error": format!("{}", e)})),
                                     "Failed to finalize draft; sending as new message"
                                 );
-                                let attachments = zeroclaw_api::attachments::take_attachments();
-
                                 let mut fallback = SendMessage::reply_to(&msg, &delivered_response);
-
-                                if !attachments.is_empty() {
-                                    fallback = fallback.with_attachments(attachments);
-                                }
-
                                 if suppress {
                                     fallback = fallback.suppress_voice();
                                 }
-
                                 channel.send(&fallback).await.is_ok()
                             }
                         }
@@ -5980,12 +5966,6 @@ async fn process_channel_message_body(
                     } else if force_voice_override {
                         send_msg = send_msg.force_voice();
                     }
-                    let attachments = zeroclaw_api::attachments::take_attachments();
-
-                    if !attachments.is_empty() {
-                        send_msg = send_msg.with_attachments(attachments);
-                    }
-
                     match channel.send(&send_msg).await {
                         Ok(()) => true,
                         Err(e) => {

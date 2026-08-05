@@ -234,7 +234,7 @@ impl Tool for CanvasTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("Missing required parameter: action".to_string()),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -261,7 +261,7 @@ impl Tool for CanvasTool {
                                 "Missing required parameter: content (for render action)"
                                     .to_string(),
                             ),
-                            attachments: Vec::new(),
+                            attachments: Vec::new()
                         });
                     }
                 };
@@ -274,7 +274,7 @@ impl Tool for CanvasTool {
                             "Content exceeds maximum size of {} bytes",
                             MAX_CONTENT_SIZE
                         )),
-                        attachments: Vec::new(),
+                        attachments: Vec::new()
                     });
                 }
 
@@ -287,7 +287,7 @@ impl Tool for CanvasTool {
                         )
                         .into(),
                         error: None,
-                        attachments: Vec::new(),
+                        attachments: Vec::new()
                     }),
                     None => Ok(ToolResult {
                         success: false,
@@ -296,7 +296,7 @@ impl Tool for CanvasTool {
                             "Maximum canvas count ({}) reached. Clear unused canvases first.",
                             MAX_CANVAS_COUNT
                         )),
-                        attachments: Vec::new(),
+                        attachments: Vec::new()
                     }),
                 }
             }
@@ -308,13 +308,13 @@ impl Tool for CanvasTool {
                         .unwrap_or_else(|_| frame.content.clone())
                         .into(),
                     error: None,
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 }),
                 None => Ok(ToolResult {
                     success: true,
                     output: format!("Canvas '{}' is empty", canvas_id).into(),
                     error: None,
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 }),
             },
 
@@ -328,7 +328,7 @@ impl Tool for CanvasTool {
                         format!("Canvas '{}' was already empty", canvas_id).into()
                     },
                     error: None,
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 })
             }
 
@@ -345,7 +345,7 @@ impl Tool for CanvasTool {
                                 "Missing required parameter: expression (for eval action)"
                                     .to_string(),
                             ),
-                            attachments: Vec::new(),
+                            attachments: Vec::new()
                         });
                     }
                 };
@@ -361,7 +361,7 @@ impl Tool for CanvasTool {
                         )
                         .into(),
                         error: None,
-                        attachments: Vec::new(),
+                        attachments: Vec::new()
                     }),
                     None => Ok(ToolResult {
                         success: false,
@@ -370,7 +370,7 @@ impl Tool for CanvasTool {
                             "Maximum canvas count ({}) reached. Clear unused canvases first.",
                             MAX_CANVAS_COUNT
                         )),
-                        attachments: Vec::new(),
+                        attachments: Vec::new()
                     }),
                 }
             }
@@ -382,7 +382,7 @@ impl Tool for CanvasTool {
                     "Unknown action: '{}'. Valid actions: render, snapshot, clear, eval",
                     other
                 )),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
         }
     }

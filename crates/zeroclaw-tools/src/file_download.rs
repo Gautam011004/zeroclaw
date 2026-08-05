@@ -140,7 +140,7 @@ impl Tool for FileDownloadTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(Self::tool_msg("tool-file-download-error-disabled")),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         };
 
@@ -149,7 +149,7 @@ impl Tool for FileDownloadTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(Self::tool_msg("tool-file-download-error-read-only")),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -158,7 +158,7 @@ impl Tool for FileDownloadTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(Self::tool_msg("tool-file-download-error-rate-limited-hour")),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -210,7 +210,7 @@ impl Tool for FileDownloadTool {
                         "tool-file-download-error-invalid-file-name",
                         &[("dest_path", dest_path)],
                     )),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -223,7 +223,7 @@ impl Tool for FileDownloadTool {
                     "tool-file-download-error-no-parent",
                     &[("dest_path", dest_path)],
                 )),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         };
 
@@ -240,7 +240,7 @@ impl Tool for FileDownloadTool {
                         "tool-file-download-error-resolve-dir",
                         &[("dest_path", dest_path), ("err", &e.to_string())],
                     )),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -253,7 +253,7 @@ impl Tool for FileDownloadTool {
                     self.security
                         .resolved_path_violation_message(&canonical_parent),
                 ),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -263,7 +263,7 @@ impl Tool for FileDownloadTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(self.security.resolved_path_violation_message(&dest)),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -276,7 +276,7 @@ impl Tool for FileDownloadTool {
                 error: Some(Self::tool_msg(
                     "tool-file-download-error-rate-limited-budget",
                 )),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -299,7 +299,7 @@ impl Tool for FileDownloadTool {
                         "tool-file-download-error-client-build",
                         &[("err", &e.to_string())],
                     )),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -319,7 +319,7 @@ impl Tool for FileDownloadTool {
                         "tool-file-download-error-request",
                         &[("err", &e.to_string())],
                     )),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -348,7 +348,7 @@ impl Tool for FileDownloadTool {
                     "tool-file-download-error-status",
                     &[("status", &status.to_string())],
                 )),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -367,7 +367,7 @@ impl Tool for FileDownloadTool {
                         ("limit", &self.config.max_file_size_bytes.to_string()),
                     ],
                 )),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -403,7 +403,7 @@ impl Tool for FileDownloadTool {
                         success: true,
                         output: output.into(),
                         error: None,
-                        attachments: Vec::new(),
+                        attachments: Vec::new()
                     })
                 }
                 Err(e) => {
@@ -415,7 +415,7 @@ impl Tool for FileDownloadTool {
                             "tool-file-download-error-move",
                             &[("err", &e.to_string())],
                         )),
-                        attachments: Vec::new(),
+                        attachments: Vec::new()
                     })
                 }
             },
@@ -425,7 +425,7 @@ impl Tool for FileDownloadTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(msg),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 })
             }
         }

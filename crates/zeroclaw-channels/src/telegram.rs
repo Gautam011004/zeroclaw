@@ -996,7 +996,7 @@ impl TelegramChannel {
             serde_json::json!({ "command": "stop",   "description": "Cancel the current in-flight task" }),
             serde_json::json!({ "command": "model",  "description": "Show or switch the current model" }),
             serde_json::json!({ "command": "models", "description": "List available model_providers or switch model_provider" }),
-            serde_json::json!({ "command": "config", "description": "Show current configuration" }),
+            serde_json::json!({ "command": "config", "description": "Show current configuration" })
         ];
 
         // Track registered names to deduplicate across skills and tools.
@@ -3654,9 +3654,7 @@ impl Channel for TelegramChannel {
 
         let (text_without_markers, attachments) = parse_attachment_markers(&content);
 
-        let has_runtime_attachments = !message.attachments.is_empty();
-
-        if !attachments.is_empty() || has_runtime_attachments {
+        if !attachments.is_empty() {
             if !text_without_markers.is_empty() {
                 self.send_text_chunks(&text_without_markers, chat_id, thread_id)
                     .await?;
@@ -3664,17 +3662,6 @@ impl Channel for TelegramChannel {
 
             for attachment in &attachments {
                 self.send_attachment(chat_id, thread_id, attachment).await?;
-            }
-
-            for attachment in &message.attachments {
-                self.send_document_bytes(
-                    chat_id,
-                    thread_id,
-                    attachment.data.clone(),
-                    &attachment.file_name,
-                    None,
-                )
-                .await?;
             }
 
             return Ok(());
@@ -7361,7 +7348,7 @@ mod tests {
                 serde_json::json!({
                     "type": "hidden_user",
                     "sender_user_name": "Hidden User"
-                })
+                }),
                 "[Forwarded from Hidden User] forwarded item",
             ),
             (

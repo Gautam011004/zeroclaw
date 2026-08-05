@@ -173,7 +173,7 @@ impl Tool for FileUploadTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("file_upload is disabled: [file_upload].url is not configured".into()),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         };
 
@@ -185,7 +185,7 @@ impl Tool for FileUploadTool {
                 error: Some(format!(
                     "Unsupported HTTP method '{method}'. Only POST and PUT are allowed."
                 )),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -194,7 +194,7 @@ impl Tool for FileUploadTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: autonomy is read-only".into()),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -203,7 +203,7 @@ impl Tool for FileUploadTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Rate limit exceeded: too many actions in the last hour".into()),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -219,7 +219,7 @@ impl Tool for FileUploadTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Path not allowed by security policy: {path}")),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -228,7 +228,7 @@ impl Tool for FileUploadTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Rate limit exceeded: action budget exhausted".into()),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -241,7 +241,7 @@ impl Tool for FileUploadTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to resolve file path: {e}")),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -254,7 +254,7 @@ impl Tool for FileUploadTool {
                     self.security
                         .resolved_path_violation_message(&resolved_path),
                 ),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -265,7 +265,7 @@ impl Tool for FileUploadTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to read file metadata: {e}")),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -275,7 +275,7 @@ impl Tool for FileUploadTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Not a regular file: {}", resolved_path.display())),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -288,7 +288,7 @@ impl Tool for FileUploadTool {
                     metadata.len(),
                     self.config.max_file_size_bytes
                 )),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -299,7 +299,7 @@ impl Tool for FileUploadTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to read file: {e}")),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -317,7 +317,7 @@ impl Tool for FileUploadTool {
                     bytes.len(),
                     self.config.max_file_size_bytes
                 )),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -338,7 +338,7 @@ impl Tool for FileUploadTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to build multipart part: {e}")),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -368,7 +368,7 @@ impl Tool for FileUploadTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Upload request failed: {e}")),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -383,14 +383,14 @@ impl Tool for FileUploadTool {
                 success: true,
                 output: format!("Uploaded {file_name} ({status}). Response: {truncated}").into(),
                 error: None,
-                attachments: Vec::new(),
+                attachments: Vec::new()
             })
         } else {
             Ok(ToolResult {
                 success: false,
                 output: truncated.into(),
                 error: Some(format!("Upload endpoint returned status {status}")),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             })
         }
     }

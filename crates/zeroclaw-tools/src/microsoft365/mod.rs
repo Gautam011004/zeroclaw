@@ -69,7 +69,7 @@ impl Microsoft365Tool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Unknown action: {action}")),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
         }
     }
@@ -102,7 +102,7 @@ impl Microsoft365Tool {
             success: true,
             output: serde_json::to_string_pretty(&result)?.into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -153,7 +153,7 @@ impl Microsoft365Tool {
             success: true,
             output: serde_json::to_string_pretty(&result)?.into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -210,7 +210,7 @@ impl Microsoft365Tool {
             success: true,
             output: serde_json::to_string_pretty(&result)?.into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -238,7 +238,7 @@ impl Microsoft365Tool {
             success: true,
             output: serde_json::to_string_pretty(&result)?.into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -296,7 +296,7 @@ impl Microsoft365Tool {
             )
             .into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -336,7 +336,7 @@ impl Microsoft365Tool {
             success: true,
             output: serde_json::to_string_pretty(&result)?.into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -409,7 +409,7 @@ impl Microsoft365Tool {
             success: true,
             output: format!("Email sent to: {}", to.join(", ")).into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -466,7 +466,7 @@ impl Microsoft365Tool {
             success: true,
             output: "Teams message sent".to_string().into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -541,7 +541,7 @@ impl Microsoft365Tool {
             success: true,
             output: format!("Calendar event created (id: {event_id})").into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -580,7 +580,7 @@ impl Microsoft365Tool {
             success: true,
             output: format!("Calendar event {event_id} deleted").into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 }
@@ -691,7 +691,7 @@ impl Tool for Microsoft365Tool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("'action' parameter is required".to_string()),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -702,7 +702,7 @@ impl Tool for Microsoft365Tool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("microsoft365.{action} failed: {e}")),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
         }
     }

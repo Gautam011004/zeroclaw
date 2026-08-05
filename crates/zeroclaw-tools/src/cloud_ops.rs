@@ -72,7 +72,7 @@ impl Tool for CloudOpsTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("'action' parameter is required".into()),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -114,7 +114,7 @@ impl Tool for CloudOpsTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("'input' parameter is required and cannot be empty".into()),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -126,7 +126,7 @@ impl Tool for CloudOpsTool {
                     "Cloud model_provider '{}' is not in supported_clouds: {:?}",
                     cloud, self.config.supported_clouds
                 )),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -142,7 +142,7 @@ impl Tool for CloudOpsTool {
                     "Unknown action '{}'. Valid: review_iac, assess_migration, cost_analysis, architecture_review",
                     action
                 )),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
         }
     }
@@ -183,7 +183,7 @@ impl CloudOpsTool {
             success: true,
             output: serde_json::to_string_pretty(&output)?.into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -200,7 +200,7 @@ impl CloudOpsTool {
             success: true,
             output: serde_json::to_string_pretty(&output)?.into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -219,7 +219,7 @@ impl CloudOpsTool {
             success: true,
             output: serde_json::to_string_pretty(&output)?.into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -237,7 +237,7 @@ impl CloudOpsTool {
             success: true,
             output: serde_json::to_string_pretty(&output)?.into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 }

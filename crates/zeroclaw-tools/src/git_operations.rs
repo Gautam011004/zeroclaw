@@ -275,7 +275,7 @@ impl GitOperationsTool {
                 .unwrap_or_default()
                 .into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -361,7 +361,7 @@ impl GitOperationsTool {
                 .unwrap_or_default()
                 .into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -407,7 +407,7 @@ impl GitOperationsTool {
                 .unwrap_or_default()
                 .into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -448,7 +448,7 @@ impl GitOperationsTool {
             .unwrap_or_default()
             .into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -522,13 +522,13 @@ impl GitOperationsTool {
                 success: true,
                 output: format!("Committed: {message}").into(),
                 error: None,
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Commit failed: {e}")),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
         }
     }
@@ -567,13 +567,13 @@ impl GitOperationsTool {
                 success: true,
                 output: format!("Staged: {}", sanitized.join(" ")).into(),
                 error: None,
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Add failed: {e}")),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
         }
     }
@@ -617,13 +617,13 @@ impl GitOperationsTool {
                 success: true,
                 output: format!("Switched to branch: {branch_name}").into(),
                 error: None,
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Checkout failed: {e}")),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
         }
     }
@@ -704,13 +704,13 @@ impl GitOperationsTool {
                 success: true,
                 output: out.into(),
                 error: None,
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Stash {action} failed: {e}")),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
         }
     }
@@ -786,7 +786,7 @@ impl GitOperationsTool {
                         .unwrap_or_default()
                         .into(),
                     error: None,
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 })
             }
             "add" => {
@@ -822,7 +822,7 @@ impl GitOperationsTool {
                     success: true,
                     output: format!("Worktree added at: {worktree_path}").into(),
                     error: None,
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 })
             }
             "remove" => {
@@ -848,7 +848,7 @@ impl GitOperationsTool {
                     success: true,
                     output: format!("Worktree removed: {worktree_path}").into(),
                     error: None,
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 })
             }
             "prune" => {
@@ -858,7 +858,7 @@ impl GitOperationsTool {
                     success: true,
                     output: "Worktree prune completed".to_string().into(),
                     error: None,
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 })
             }
             _ => anyhow::bail!(
@@ -954,7 +954,7 @@ impl Tool for GitOperationsTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("Missing 'operation' parameter".into()),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -967,7 +967,7 @@ impl Tool for GitOperationsTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Invalid path: {e}")),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         };
@@ -995,7 +995,7 @@ impl Tool for GitOperationsTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(error_msg),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
         }
@@ -1009,7 +1009,7 @@ impl Tool for GitOperationsTool {
                     error: Some(
                         "Action blocked: git write operations require higher autonomy level".into(),
                     ),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
 
@@ -1019,7 +1019,7 @@ impl Tool for GitOperationsTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some("Action blocked: read-only mode".into()),
-                        attachments: Vec::new(),
+                        attachments: Vec::new()
                     });
                 }
                 AutonomyLevel::Supervised | AutonomyLevel::Full => {}
@@ -1032,7 +1032,7 @@ impl Tool for GitOperationsTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: rate limit exceeded".into()),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -1051,7 +1051,7 @@ impl Tool for GitOperationsTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Unknown operation: {operation}")),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
         }
     }

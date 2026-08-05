@@ -188,7 +188,7 @@ impl ProxyConfigTool {
             }))?
             .into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -206,7 +206,7 @@ impl ProxyConfigTool {
             }))?
             .into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -328,7 +328,7 @@ impl ProxyConfigTool {
             }))?
             .into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -357,7 +357,7 @@ impl ProxyConfigTool {
             }))?
             .into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -389,7 +389,7 @@ impl ProxyConfigTool {
             }))?
             .into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 
@@ -403,7 +403,7 @@ impl ProxyConfigTool {
             }))?
             .into(),
             error: None,
-            attachments: Vec::new(),
+            attachments: Vec::new()
         })
     }
 }
@@ -503,7 +503,7 @@ impl Tool for ProxyConfigTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error.to_string()),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
         }
     }

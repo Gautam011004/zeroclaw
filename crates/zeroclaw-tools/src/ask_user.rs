@@ -94,7 +94,7 @@ impl Tool for AskUserTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Action blocked: {e}")),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -144,7 +144,7 @@ impl Tool for AskUserTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("No channels available yet (channels not initialized)".to_string()),
-                    attachments: Vec::new(),
+                    attachments: Vec::new()
                 });
             }
             if let Some(ref name) = requested_channel {
@@ -198,7 +198,7 @@ impl Tool for AskUserTool {
                         success: true,
                         output: answer.into(),
                         error: None,
-                        attachments: Vec::new(),
+                        attachments: Vec::new()
                     });
                 }
                 Ok(None) => { /* fall through to send+listen */ }
@@ -209,7 +209,7 @@ impl Tool for AskUserTool {
                         error: Some(format!(
                             "Failed to ask question on channel '{channel_name}': {e}"
                         )),
-                        attachments: Vec::new(),
+                        attachments: Vec::new()
                     });
                 }
             }
@@ -221,7 +221,7 @@ impl Tool for AskUserTool {
                     "Channel '{channel_name}' requires `choices` for ask_user \
                      (free-form questions await ACP elicitation Phase 2)"
                 )),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -235,7 +235,7 @@ impl Tool for AskUserTool {
                 error: Some(format!(
                     "Failed to send question to channel '{channel_name}': {e}"
                 )),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             });
         }
 
@@ -256,13 +256,13 @@ impl Tool for AskUserTool {
                 success: true,
                 output: msg.content.into(),
                 error: None,
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
             Ok(None) => Ok(ToolResult {
                 success: false,
                 output: "TIMEOUT".to_string().into(),
                 error: Some("Channel closed before receiving a response".to_string()),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
             Err(_) => Ok(ToolResult {
                 success: false,
@@ -270,7 +270,7 @@ impl Tool for AskUserTool {
                 error: Some(format!(
                     "No response received within {timeout_secs} seconds"
                 )),
-                attachments: Vec::new(),
+                attachments: Vec::new()
             }),
         }
     }
