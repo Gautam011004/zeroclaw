@@ -154,7 +154,7 @@ impl JiraTool {
                 .unwrap_or_else(|_| shaped.to_string())
                 .into(),
             error: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         })
     }
 
@@ -179,7 +179,7 @@ impl JiraTool {
                 .unwrap_or_else(|_| output.to_string())
                 .into(),
             error: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         })
     }
 
@@ -398,7 +398,7 @@ impl JiraTool {
                 .unwrap_or_else(|_| shaped.to_string())
                 .into(),
             error: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         })
     }
 
@@ -597,7 +597,7 @@ impl JiraTool {
                 .unwrap_or_else(|_| output.to_string())
                 .into(),
             error: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         })
     }
 
@@ -653,7 +653,7 @@ impl JiraTool {
                 .unwrap_or_else(|_| shaped.to_string())
                 .into(),
             error: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         })
     }
 
@@ -744,7 +744,7 @@ impl JiraTool {
                 .unwrap_or_else(|_| output.to_string())
                 .into(),
             error: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         })
     }
 
@@ -835,7 +835,7 @@ impl JiraTool {
                 .unwrap_or_else(|_| output.to_string())
                 .into(),
             error: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         })
     }
 
@@ -946,7 +946,7 @@ impl JiraTool {
                 .unwrap_or_else(|_| output.to_string())
                 .into(),
             error: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         })
     }
 }
@@ -1051,7 +1051,7 @@ impl Tool for JiraTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("Missing required parameter: action".into()),
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -1075,7 +1075,7 @@ impl Tool for JiraTool {
                 error: Some(format!(
                     "Unknown action: '{action}'. Valid actions: get_ticket, search_tickets, comment_ticket, list_projects, myself, list_transitions, transition_ticket, create_ticket"
                 )),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             });
         }
 
@@ -1088,7 +1088,7 @@ impl Tool for JiraTool {
                      Currently allowed: {}",
                     self.allowed_actions.join(", ")
                 )),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             });
         }
 
@@ -1105,7 +1105,7 @@ impl Tool for JiraTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             });
         }
 
@@ -1118,7 +1118,7 @@ impl Tool for JiraTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("get_ticket requires issue_key parameter".into()),
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -1138,7 +1138,7 @@ impl Tool for JiraTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("search_tickets requires jql parameter".into()),
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -1158,7 +1158,7 @@ impl Tool for JiraTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("comment_ticket requires issue_key parameter".into()),
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -1171,7 +1171,7 @@ impl Tool for JiraTool {
                             error: Some(
                                 "comment_ticket requires a non-empty comment parameter".into(),
                             ),
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -1185,7 +1185,7 @@ impl Tool for JiraTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("list_transitions requires issue_key parameter".into()),
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -1199,7 +1199,7 @@ impl Tool for JiraTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some("transition_ticket requires issue_key parameter".into()),
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -1219,7 +1219,7 @@ impl Tool for JiraTool {
                             "transition_ticket requires either transition_id or transition_name"
                                 .into(),
                         ),
-                        attachments: Vec::new()
+                        attachments: Vec::new(),
                     });
                 }
                 if transition_id.is_some() && transition_name.is_some() {
@@ -1245,7 +1245,7 @@ impl Tool for JiraTool {
                             error: Some(
                                 "create_ticket requires a non-empty project_key parameter".into(),
                             ),
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -1258,7 +1258,7 @@ impl Tool for JiraTool {
                             error: Some(
                                 "create_ticket requires a non-empty issue_type parameter".into(),
                             ),
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -1271,7 +1271,7 @@ impl Tool for JiraTool {
                             error: Some(
                                 "create_ticket requires a non-empty summary parameter".into(),
                             ),
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         });
                     }
                 };
@@ -1314,7 +1314,7 @@ impl Tool for JiraTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(e.to_string()),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             }),
         }
     }

@@ -64,7 +64,7 @@ impl Tool for CodexCliTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             });
         }
 
@@ -102,7 +102,7 @@ impl Tool for CodexCliTool {
                             "working_directory '{}' does not exist or is not accessible",
                             wd
                         )),
-                        attachments: Vec::new()
+                        attachments: Vec::new(),
                     });
                 }
             };
@@ -116,7 +116,7 @@ impl Tool for CodexCliTool {
                             "workspace directory '{}' does not exist or is not accessible",
                             workspace.display()
                         )),
-                        attachments: Vec::new()
+                        attachments: Vec::new(),
                     });
                 }
             };
@@ -129,7 +129,7 @@ impl Tool for CodexCliTool {
                         wd,
                         workspace.display()
                     )),
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 });
             }
             canonical_wd
@@ -204,7 +204,7 @@ impl Tool for CodexCliTool {
                     } else {
                         Some(stderr)
                     },
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 })
             }
             Ok(Err(e)) => {
@@ -221,7 +221,7 @@ impl Tool for CodexCliTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(msg),
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 })
             }
             Err(_) => {
@@ -234,7 +234,7 @@ impl Tool for CodexCliTool {
                         "Codex CLI timed out after {}s and was killed",
                         self.config.timeout_secs
                     )),
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 })
             }
         }

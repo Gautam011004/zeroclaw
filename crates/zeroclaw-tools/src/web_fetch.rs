@@ -187,7 +187,7 @@ impl WebFetchTool {
                     status.as_u16(),
                     error_body
                 )),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             });
         }
 
@@ -216,7 +216,7 @@ impl WebFetchTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Firecrawl returned empty markdown content".into()),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             });
         }
 
@@ -226,7 +226,7 @@ impl WebFetchTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         })
     }
 
@@ -239,7 +239,7 @@ impl WebFetchTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("HTTP request failed: {e}")),
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 };
             }
         };
@@ -254,7 +254,7 @@ impl WebFetchTool {
                     status.as_u16(),
                     status.canonical_reason().unwrap_or("Unknown")
                 )),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             };
         }
 
@@ -281,7 +281,7 @@ impl WebFetchTool {
                     "Unsupported content type: {content_type}. \
                      web_fetch supports text/html, text/plain, text/markdown, and application/json."
                 )),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             };
         };
 
@@ -292,7 +292,7 @@ impl WebFetchTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to read response body: {e}")),
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 };
             }
         };
@@ -309,7 +309,7 @@ impl WebFetchTool {
             success: true,
             output: output.into(),
             error: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         }
     }
 }
@@ -359,7 +359,7 @@ impl Tool for WebFetchTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: autonomy is read-only".into()),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             });
         }
 
@@ -373,7 +373,7 @@ impl Tool for WebFetchTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -429,7 +429,7 @@ impl Tool for WebFetchTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to build HTTP client: {e}")),
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 });
             }
         };

@@ -134,7 +134,7 @@ impl Tool for ChannelRoomTool {
                     "tool-channel-room-error-security",
                     &[("err", &error)],
                 )),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             });
         }
 
@@ -148,7 +148,7 @@ impl Tool for ChannelRoomTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(error),
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -195,7 +195,7 @@ async fn create_room(
             .to_string()
             .into(),
             error: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         }),
         Err(error) => {
             let error = error.to_string();
@@ -206,7 +206,7 @@ async fn create_room(
                     "tool-channel-room-error-create-failed",
                     &[("err", &error)],
                 )),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             })
         }
     }
@@ -232,7 +232,7 @@ async fn invite_user(
             .to_string()
             .into(),
             error: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         }),
         Err(error) => {
             let error = error.to_string();
@@ -243,7 +243,7 @@ async fn invite_user(
                     "tool-channel-room-error-invite-failed",
                     &[("err", &error)],
                 )),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             })
         }
     }

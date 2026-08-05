@@ -67,7 +67,7 @@ impl Tool for DiscordSearchTool {
                 error: Some(
                     "Provide at least 'query' (keywords) or time range ('since'/'until')".into(),
                 ),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             });
         }
 
@@ -80,7 +80,7 @@ impl Tool for DiscordSearchTool {
                 error: Some(format!(
                     "Invalid 'since' date: {s}. Expected RFC 3339, e.g. 2025-03-01T00:00:00Z"
                 )),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             });
         }
         if let Some(u) = until
@@ -92,7 +92,7 @@ impl Tool for DiscordSearchTool {
                 error: Some(format!(
                     "Invalid 'until' date: {u}. Expected RFC 3339, e.g. 2025-03-01T00:00:00Z"
                 )),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             });
         }
         if let (Some(s), Some(u)) = (since, until)
@@ -106,7 +106,7 @@ impl Tool for DiscordSearchTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("'since' must be before 'until'".into()),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             });
         }
 
@@ -125,7 +125,7 @@ impl Tool for DiscordSearchTool {
                 success: true,
                 output: "No Discord messages found.".into(),
                 error: None,
-                attachments: Vec::new()
+                attachments: Vec::new(),
             }),
             Ok(entries) => {
                 let mut output = format!("Found {} Discord messages:\n", entries.len());
@@ -139,14 +139,14 @@ impl Tool for DiscordSearchTool {
                     success: true,
                     output: output.into(),
                     error: None,
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 })
             }
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Discord search failed: {e}")),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             }),
         }
     }

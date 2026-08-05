@@ -662,14 +662,14 @@ impl Tool for ComposioTool {
                             success: true,
                             output: output.into(),
                             error: None,
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         })
                     }
                     Err(e) => Ok(ToolResult {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Failed to list actions: {e}")),
-                        attachments: Vec::new()
+                        attachments: Vec::new(),
                     }),
                 }
             }
@@ -715,14 +715,14 @@ impl Tool for ComposioTool {
                             success: true,
                             output: output.into(),
                             error: None,
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         })
                     }
                     Err(e) => Ok(ToolResult {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Failed to list connected accounts: {e}")),
-                        attachments: Vec::new()
+                        attachments: Vec::new(),
                     }),
                 }
             }
@@ -736,7 +736,7 @@ impl Tool for ComposioTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(error),
-                        attachments: Vec::new()
+                        attachments: Vec::new(),
                     });
                 }
 
@@ -776,7 +776,7 @@ impl Tool for ComposioTool {
                             success: true,
                             output: output.into(),
                             error: None,
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         })
                     }
                     Err(e) => {
@@ -792,7 +792,7 @@ impl Tool for ComposioTool {
                             success: false,
                             output: ToolOutput::default(),
                             error: Some(format!("Action execution failed: {e}{schema_hint}")),
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         })
                     }
                 }
@@ -807,7 +807,7 @@ impl Tool for ComposioTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(error),
-                        attachments: Vec::new()
+                        attachments: Vec::new(),
                     });
                 }
 
@@ -842,14 +842,14 @@ impl Tool for ComposioTool {
                             success: true,
                             output: output.into(),
                             error: None,
-                            attachments: Vec::new()
+                            attachments: Vec::new(),
                         })
                     }
                     Err(e) => Ok(ToolResult {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Failed to get connection URL: {e}")),
-                        attachments: Vec::new()
+                        attachments: Vec::new(),
                     }),
                 }
             }
@@ -860,7 +860,7 @@ impl Tool for ComposioTool {
                 error: Some(format!(
                     "Unknown action '{action}'. Use 'list', 'list_accounts', 'execute', or 'connect'."
                 )),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             }),
         }
     }
