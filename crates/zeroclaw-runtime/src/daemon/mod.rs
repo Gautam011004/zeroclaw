@@ -664,6 +664,29 @@ pub async fn run(
         ));
     }
 
+    if crate::charge::settlement_worker_enabled(&config) {
+        let charge_cfg = config.clone();
+        let charge_cancel = channels_cancel.clone();
+        handles.push(spawn_component_supervisor(
+            "charge-settlement",
+            initial_backoff,
+            max_backoff,
+            channels_cancel.clone(),
+            move || {
+                let cfg = charge_cfg.clone();
+                let cancel = charge_cancel.clone();
+                async move { Box::pin(run_charge_settlement_worker(cfg, cancel)).await }
+            },
+        ));
+    } else {
+        crate::health::mark_component_ok("charge-settlement");
+        ::zeroclaw_log::record!(
+            INFO,
+            ::zeroclaw_log::Event::new(module_path!(), ::zeroclaw_log::Action::Note),
+            "charge settlement worker not started (disabled, no merchant wallet, or interval 0)"
+        );
+    }
+
     if config.scheduler.enabled {
         let scheduler_cfg = config.clone();
         let scheduler_event_tx = event_tx.clone();
@@ -1317,6 +1340,76 @@ async fn retry_heartbeat_mcp_registry(
         }
     }
     Ok(())
+}
+
+/// Poll the chain for payments against open invoices and announce settlements.
+///
+/// Runs **in-process** rather than as a cron shell job. Settlement is
+/// internal system work, not a model- or user-authored command: routing it
+/// through cron meant a spawned `sh -c` that had to re-resolve config, be found
+/// on `PATH`, and then pass the agent's shell risk policy — which correctly
+/// rejects bare path arguments, silently erroring the job every tick. Working
+/// around that would have meant evading a control that exists on purpose.
+/// In-process there is no shell, no `PATH`, no config re-resolution and no
+/// command to sandbox — just the same `run_settlement_pass` the CLI calls.
+///
+/// A failing pass is logged and retried on the next tick rather than returned:
+/// an unreachable RPC endpoint must not tear down and restart the worker.
+async fn run_charge_settlement_worker(
+    config: Config,
+    cancel: tokio_util::sync::CancellationToken,
+) -> Result<()> {
+    let period = std::time::Duration::from_secs(config.charge.settlement_interval_secs.max(1));
+    let mut interval = tokio::time::interval(period);
+    interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+
+    ::zeroclaw_log::record!(
+        INFO,
+        ::zeroclaw_log::Event::new(module_path!(), ::zeroclaw_log::Action::Note).with_attrs(
+            ::serde_json::json!({ "interval_secs": config.charge.settlement_interval_secs })
+        ),
+        "charge settlement worker started"
+    );
+    crate::health::mark_component_ok("charge-settlement");
+
+    loop {
+        tokio::select! {
+            () = cancel.cancelled() => return Ok(()),
+            _ = interval.tick() => {}
+        }
+
+        match crate::charge::run_settlement_pass(&config).await {
+            Ok(summary) => {
+                // Only speak up when the pass did something. A quiet ledger
+                // ticking every two minutes should not fill the log.
+                if summary.checked > 0 || summary.settled > 0 || summary.notified > 0 {
+                    ::zeroclaw_log::record!(
+                        INFO,
+                        ::zeroclaw_log::Event::new(module_path!(), ::zeroclaw_log::Action::Note)
+                            .with_attrs(::serde_json::json!({
+                                "checked": summary.checked,
+                                "settled": summary.settled,
+                                "still_pending": summary.still_pending,
+                                "expired": summary.expired,
+                                "notified": summary.notified,
+                                "errors": summary.errors,
+                                "notify_failures": summary.notify_failures,
+                            })),
+                        "charge settlement pass complete"
+                    );
+                }
+            }
+            Err(e) => {
+                ::zeroclaw_log::record!(
+                    WARN,
+                    ::zeroclaw_log::Event::new(module_path!(), ::zeroclaw_log::Action::Note)
+                        .with_outcome(::zeroclaw_log::EventOutcome::Unknown)
+                        .with_attrs(::serde_json::json!({"error": format!("{e:#}")})),
+                    "charge settlement pass failed; retrying next tick"
+                );
+            }
+        }
+    }
 }
 
 async fn run_heartbeat_worker(config: Config) -> Result<()> {

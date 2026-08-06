@@ -1,6 +1,7 @@
 //! Tool subsystem for agent-callable capabilities.
 
 pub mod attribution;
+pub mod charge;
 pub mod cron_add;
 pub(crate) mod cron_common;
 pub mod cron_list;
@@ -11,6 +12,7 @@ pub mod cron_update;
 pub mod delegate;
 pub mod deliver_file;
 pub mod file_read;
+pub mod list_charges;
 pub mod model_switch;
 pub mod param_options;
 pub mod read_skill;
@@ -31,7 +33,6 @@ pub mod sop_workshop;
 pub mod spawn_subagent;
 pub mod todo_write;
 pub mod verifiable_intent;
-pub mod charge;
 
 // Tool types from zeroclaw-tools (direct imports, no shims)
 pub use zeroclaw_tools::ask_user::AskUserTool;
@@ -122,6 +123,7 @@ pub use zeroclaw_api::schema::{CleaningStrategy, SchemaCleanr};
 pub use zeroclaw_api::tool::{Tool, ToolOutput, ToolResult, ToolSpec};
 
 // Local tool re-exports (tools with root deps, kept in misc)
+pub use charge::ChargeTool;
 pub use cron_add::CronAddTool;
 pub use cron_list::CronListTool;
 pub use cron_remove::CronRemoveTool;
@@ -134,6 +136,7 @@ pub use deliver_file::{
     read_delivered_artifact_bounded,
 };
 pub use file_read::FileReadTool;
+pub use list_charges::ListChargesTool;
 pub use model_switch::ModelSwitchTool;
 pub use read_skill::ReadSkillTool;
 pub use schedule::ScheduleTool;
@@ -151,7 +154,6 @@ pub use sop_workshop::SopWorkshopTool;
 pub use spawn_subagent::SpawnSubagentTool;
 pub use todo_write::TodoWriteTool;
 pub use verifiable_intent::VerifiableIntentTool;
-pub use charge::ChargeTool;
 
 /// Re-entrant agent-spawning tools that must never be collapsed by the
 /// per-turn duplicate-call guard: launching several with the same prompt
@@ -670,7 +672,7 @@ pub fn all_tools_with_runtime(
         )),
         Arc::new(CalculatorTool::new()),
         Arc::new(WeatherTool::new()),
-        Arc::new(ChargeTool::new()),
+        Arc::new(ChargeTool::new(Arc::new(root_config.clone()), agent_alias)),
         Arc::new(CanvasTool::new(canvas_store.unwrap_or_default())),
         Arc::new(TodoWriteTool::new()),
     ];

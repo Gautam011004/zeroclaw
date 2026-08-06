@@ -1036,6 +1036,62 @@ pub type DeliveryFn = Box<
         + Sync,
 >;
 
+/// One shared delivery recorder for the whole test binary.
+///
+/// [`register_delivery_fn`] writes a process-wide `OnceLock`, so the first
+/// caller wins and every later one is a silent no-op. Two test modules each
+/// installing their own recorder would therefore break whichever lost the race
+/// — so all of them share this one, and it satisfies every suite's contract:
+/// `fail-delivery` errors, `count-delivery` increments, and everything is
+/// recorded for assertion.
+#[cfg(test)]
+pub(crate) mod test_delivery {
+    use std::sync::Mutex;
+    use std::sync::atomic::AtomicUsize;
+
+    /// Channel name the counter tracks.
+    pub(crate) const COUNT_CHANNEL: &str = "count-delivery";
+    /// Channel name that forces a synthetic delivery failure.
+    pub(crate) const FAIL_CHANNEL: &str = "fail-delivery";
+
+    pub(crate) static DELIVERED: AtomicUsize = AtomicUsize::new(0);
+
+    type Sent = (String, String, Option<String>, String);
+    pub(crate) static RECORDED: std::sync::LazyLock<Mutex<Vec<Sent>>> =
+        std::sync::LazyLock::new(|| Mutex::new(Vec::new()));
+
+    /// Install the recorder. Idempotent and safe to call from every test.
+    pub(crate) fn register_recording_delivery_fn() {
+        super::register_delivery_fn(Box::new(|_config, channel, target, thread, output| {
+            Box::pin(async move {
+                if channel == FAIL_CHANNEL {
+                    anyhow::bail!("synthetic delivery failure");
+                }
+                if channel == COUNT_CHANNEL {
+                    DELIVERED.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+                }
+                RECORDED
+                    .lock()
+                    .unwrap_or_else(|e| e.into_inner())
+                    .push((channel, target, thread, output));
+                Ok(())
+            })
+        }));
+    }
+
+    /// Deliveries whose body contains `needle`. Tests run concurrently against
+    /// one recorder, so filter rather than indexing.
+    pub(crate) fn recorded_containing(needle: &str) -> Vec<Sent> {
+        RECORDED
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .iter()
+            .filter(|(_, _, _, body)| body.contains(needle))
+            .cloned()
+            .collect()
+    }
+}
+
 /// Global delivery function, injected by the binary crate at startup.
 static DELIVERY_FN: std::sync::OnceLock<DeliveryFn> = std::sync::OnceLock::new();
 
@@ -2303,28 +2359,7 @@ mod tests {
         assert!(deliver_if_configured(&config, &job, "x").await.is_ok());
     }
 
-    static DELIVERED: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
-
-    /// Channel name the recorder counts. Used only by the suppression test.
-    const COUNT_CHANNEL: &str = "count-delivery";
-
-    fn register_recording_delivery_fn() {
-        // Idempotent: register_delivery_fn is a no-op once the OnceLock is set,
-        // so repeated calls across tests are safe and the first writer wins. The
-        // handler honours the `fail-delivery` failure contract used by the
-        // delivery-classification tests so it composes regardless of order.
-        register_delivery_fn(Box::new(|_config, channel, _target, _thread, _output| {
-            Box::pin(async move {
-                if channel == "fail-delivery" {
-                    anyhow::bail!("synthetic delivery failure");
-                }
-                if channel == COUNT_CHANNEL {
-                    DELIVERED.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
-                }
-                Ok(())
-            })
-        }));
-    }
+    use super::test_delivery::{COUNT_CHANNEL, DELIVERED, register_recording_delivery_fn};
 
     fn announce_job() -> CronJob {
         let mut job = test_job("echo ok");

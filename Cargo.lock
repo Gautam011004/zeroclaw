@@ -14926,6 +14926,7 @@ dependencies = [
  "opentelemetry-otlp",
  "opentelemetry_sdk",
  "parking_lot",
+ "percent-encoding",
  "portable-atomic",
  "prometheus",
  "qrcode",
