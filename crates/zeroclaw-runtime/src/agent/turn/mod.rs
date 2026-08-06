@@ -101,6 +101,14 @@ pub struct ToolLoop<'a> {
     pub shared_budget: Option<Arc<std::sync::atomic::AtomicUsize>>,
     pub channel: Option<&'a dyn Channel>,
     pub collected_receipts: Option<&'a std::sync::Mutex<Vec<String>>>,
+    /// Per-turn sink for binary media that tools return on
+    /// [`zeroclaw_api::tool::ToolResult::attachments`]. Owned by the turn
+    /// entrypoint (see [`crate::agent::attachments::AttachmentScope`]) and
+    /// drained once at delivery into `SendMessage::attachments`, so attachment
+    /// bytes never enter `history` or reach the model. `None` on paths with no
+    /// delivery surface, which drops attachments inertly.
+    pub collected_attachments:
+        Option<&'a std::sync::Mutex<Vec<zeroclaw_api::media::MediaAttachment>>>,
     pub event_tx: Option<tokio::sync::mpsc::Sender<TurnEvent>>,
     pub steering: Option<&'a mut tokio::sync::mpsc::Receiver<String>>,
     pub new_messages_out: Option<&'a mut Vec<ChatMessage>>,
@@ -193,6 +201,7 @@ pub async fn run_tool_call_loop(mut p: ToolLoop<'_>) -> Result<String> {
         shared_budget,
         channel,
         collected_receipts,
+        collected_attachments,
         event_tx,
         mut steering,
         mut new_messages_out,
@@ -289,6 +298,7 @@ pub async fn run_tool_call_loop(mut p: ToolLoop<'_>) -> Result<String> {
                     parent_agent_alias,
                     turn_id,
                     channel_name,
+                    channel_reply_target: None,
                 },
             )
             .await;
@@ -1036,6 +1046,7 @@ pub async fn run_tool_call_loop(mut p: ToolLoop<'_>) -> Result<String> {
             &loop_ignore_tools,
             max_tool_result_chars,
             collected_receipts,
+            collected_attachments,
             model,
             iteration,
             turn_id,
@@ -1109,6 +1120,7 @@ pub async fn run_tool_call_loop(mut p: ToolLoop<'_>) -> Result<String> {
                 shared_budget.clone(),
                 channel,
                 collected_receipts,
+                collected_attachments,
                 event_tx.clone(),
                 new_messages_out.as_deref_mut(),
                 image_cache.as_deref_mut(),
@@ -1557,6 +1569,7 @@ async fn drive_live_sop_actions(
     shared_budget: Option<Arc<std::sync::atomic::AtomicUsize>>,
     channel: Option<&dyn Channel>,
     collected_receipts: Option<&std::sync::Mutex<Vec<String>>>,
+    collected_attachments: Option<&std::sync::Mutex<Vec<zeroclaw_api::media::MediaAttachment>>>,
     event_tx: Option<tokio::sync::mpsc::Sender<TurnEvent>>,
     mut new_messages_out: Option<&mut Vec<ChatMessage>>,
     mut image_cache: Option<&mut zeroclaw_providers::multimodal::LocalImageCache>,
@@ -1864,6 +1877,7 @@ async fn drive_live_sop_actions(
                                     shared_budget: shared_budget.clone(),
                                     channel,
                                     collected_receipts,
+                                    collected_attachments,
                                     event_tx: event_tx.clone(),
                                     steering: None,
                                     // A cross-agent child transcript is not part
@@ -2860,6 +2874,8 @@ mod sop_step_reassembly_tests {
             None,
             None,
             None,
+            None,
+            // collected_attachments
             None,
             None,
             new_messages_out,

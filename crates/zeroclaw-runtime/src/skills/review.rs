@@ -124,6 +124,9 @@ pub async fn maybe_run_skill_review(
                 shared_budget: None,
                 channel: None,
                 collected_receipts: Some(&receipts),
+                // Internal review fork with no delivery surface — any media a
+                // review tool produced would have nowhere to go.
+                collected_attachments: None,
                 event_tx: None,
                 steering: None,
                 new_messages_out: None,

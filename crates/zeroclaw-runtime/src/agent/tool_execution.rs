@@ -81,7 +81,7 @@ fn unavailable_tool_outcome(
         duration,
         receipt: None,
         output_data: None,
-        attachments: Vec::new()
+        attachments: Vec::new(),
     }
 }
 
@@ -102,7 +102,7 @@ pub struct ToolExecutionOutcome {
     /// Cryptographic HMAC receipt proving this tool actually executed.
     /// Present only when tool receipts are enabled in config.
     pub receipt: Option<String>,
-    pub attachments: Vec<zeroclaw_api::media::MediaAttachment>
+    pub attachments: Vec<zeroclaw_api::media::MediaAttachment>,
 }
 
 // ── Single tool execution ────────────────────────────────────────────────
@@ -195,7 +195,7 @@ pub(crate) async fn execute_one_tool(
             duration,
             receipt: None,
             output_data: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         });
     };
 
@@ -265,6 +265,21 @@ pub(crate) async fn execute_one_tool(
             Ok(tool_future.await)
         }
     };
+    // Expose the originating conversation to the tool. Tools that schedule
+    // deferred work (`charge` recording where to send its payment
+    // confirmation) need it, and it cannot be a constructor argument: a tool is
+    // built once per agent, but the channel varies per turn.
+    // Prefer a context the entrypoint already scoped — the channel orchestrator
+    // knows the channel *alias*, which the turn loop's bare `channel_name` does
+    // not carry, and only the dotted `<type>.<alias>` form can be resolved by
+    // out-of-band delivery later. Fall back to the bare form elsewhere.
+    let channel_ctx = crate::agent::channel_context::TurnChannelContext::current().or_else(|| {
+        Some(crate::agent::channel_context::TurnChannelContext::new(
+            meta.channel_name,
+            meta.channel_reply_target,
+        ))
+    });
+    let execute = crate::agent::channel_context::scope_channel_context(channel_ctx, execute);
     let tool_result = if let Some(model_switch_callback) = dispatch.model_switch_callback {
         scope_model_switch_state(Arc::clone(model_switch_callback), execute).await
     } else {
@@ -339,7 +354,7 @@ pub(crate) async fn execute_one_tool(
                         error_reason: None,
                         duration,
                         receipt,
-                        attachments: r.attachments
+                        attachments: r.attachments,
                     })
                 } else {
                     let reason = r.error.unwrap_or_else(|| r.output.into_string());
@@ -362,7 +377,7 @@ pub(crate) async fn execute_one_tool(
                         duration,
                         receipt: None,
                         output_data: None,
-                        attachments: Vec::new()
+                        attachments: Vec::new(),
                     })
                 }
             }
@@ -402,7 +417,7 @@ pub(crate) async fn execute_one_tool(
                     duration,
                     receipt: None,
                     output_data: None,
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 })
             }
         }
@@ -644,6 +659,7 @@ mod tests {
             agent_alias: None,
             turn_id: "test-turn-id",
             channel_name: "test",
+            channel_reply_target: None,
         };
         let outcome = execute_one_tool(
             "docker-mcp__extract_text",
@@ -699,6 +715,7 @@ mod tests {
             agent_alias: None,
             turn_id: "test-turn-id",
             channel_name: "test",
+            channel_reply_target: None,
         };
         let excluded = vec!["docker-mcp__extract_text".to_string()];
         let outcome = execute_one_tool(

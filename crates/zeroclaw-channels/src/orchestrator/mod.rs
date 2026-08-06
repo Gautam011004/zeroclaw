@@ -324,7 +324,6 @@ enum ChannelRuntimeCommand {
     NewSession,
     SetThinking(Option<ThinkingLevel>),
     InvalidThinking(String),
-    
 }
 
 #[derive(Debug, Clone, Default, Deserialize)]
@@ -5318,6 +5317,13 @@ async fn process_channel_message_body(
             collector: std::sync::Arc::clone(&tool_receipts_collector),
         }
     });
+    // Per-turn sink for binary media tools return on `ToolResult::attachments`
+    // (QR codes, generated images, PDFs). Owned here — by the frame that also
+    // delivers — because a task-local only survives inside the future it scopes:
+    // opening the scope deeper (inside the loop) and draining it here would
+    // always read back empty. Drained exactly once below, into
+    // `SendMessage::attachments`, so the bytes never enter history or the model.
+    let attachment_scope = zeroclaw_runtime::agent::attachments::AttachmentScope::new();
     let loop_knobs = LoopKnobs::default();
     let turn_id = uuid::Uuid::new_v4().to_string();
     // Bracket the channel turn so lifecycle events
@@ -5399,6 +5405,7 @@ async fn process_channel_message_body(
                     .receipt_generator
                     .as_ref()
                     .map(|_| tool_receipts_collector.as_ref()),
+                collected_attachments: Some(attachment_scope.collector()),
                 event_tx: None,
                 steering: None,
                 new_messages_out: None,
@@ -5440,6 +5447,27 @@ async fn process_channel_message_body(
                 .scope(thinking.params.native_thinking, tool_loop);
             let tool_loop = zeroclaw_runtime::agent::tool_receipts::TOOL_LOOP_RECEIPT_CONTEXT
                 .scope(receipt_scope.clone(), tool_loop);
+            // Scoped so `DelegateTool` sub-loops forward their tools' media into
+            // this same per-turn collector; the top-level loop uses the explicit
+            // `collected_attachments` handle above.
+            let tool_loop = zeroclaw_runtime::agent::attachments::TURN_ATTACHMENT_SCOPE
+                .scope(Some(attachment_scope.clone()), tool_loop);
+            // Scope the origin with the channel ALIAS included. `msg.channel` is
+            // the bare type ("telegram"), but out-of-band delivery — a
+            // `charge check` process with no live channel registry — can only
+            // resolve the dotted `<type>.<alias>` form from config. Without this
+            // a payment confirmation would fail with "must be a dotted
+            // <type>.<alias> ref" and never reach the customer.
+            let tool_loop = zeroclaw_runtime::agent::channel_context::TURN_CHANNEL_CONTEXT.scope(
+                Some(
+                    zeroclaw_runtime::agent::channel_context::TurnChannelContext::with_alias(
+                        &msg.channel,
+                        msg.channel_alias.as_deref(),
+                        Some(msg.reply_target.as_str()),
+                    ),
+                ),
+                tool_loop,
+            );
             let tool_loop = zeroclaw_runtime::agent::loop_::TOOL_LOOP_COST_TRACKING_CONTEXT
                 .scope(cost_tracking_context.clone(), tool_loop);
             let tool_loop = scope_session_key(Some(history_key.clone()), tool_loop);
@@ -5891,6 +5919,11 @@ async fn process_channel_message_body(
                     .as_ref()
                     .and_then(|r| r.channel.as_deref())
                     .is_some();
+                // Drain this turn's tool-produced media exactly once. Every
+                // branch below consumes from this local: draining inside each
+                // branch would hand the attachments to whichever path happened
+                // to run and silently drop them from the rest.
+                let turn_attachments = attachment_scope.drain();
                 // Whether the agent's reply reached a channel — gates the
                 // `fire_message_sent` observer hook below.
                 let reply_delivered = if is_redirect {
@@ -5909,22 +5942,32 @@ async fn process_channel_message_body(
                     } else if force_voice_override {
                         send_msg = send_msg.force_voice();
                     }
+                    if !turn_attachments.is_empty() {
+                        send_msg = send_msg.with_attachments(turn_attachments);
+                    }
                     channel.send(&send_msg).await.is_ok()
                 } else if let Some(ref draft_id) = draft_message_id {
                     // Same channel with draft. For force-voice routing: cancel the
                     // draft placeholder and deliver via send() so force_voice
                     // reaches the channel's voice path (finalize_draft has no
                     // force_voice concept).
-                    if force_voice_override {
+                    // A draft cannot carry media — `finalize_draft` edits text
+                    // only — so tool-produced attachments take the same
+                    // cancel-then-send path that force-voice already uses.
+                    if force_voice_override || !turn_attachments.is_empty() {
                         let _ = channel.cancel_draft(&delivery_recipient, draft_id).await;
-                        channel
-                            .send(
-                                &SendMessage::new(&delivered_response, &delivery_recipient)
-                                    .force_voice()
-                                    .in_thread(msg.thread_ts.clone()),
-                            )
-                            .await
-                            .is_ok()
+                        let mut send_msg =
+                            SendMessage::new(&delivered_response, &delivery_recipient)
+                                .in_thread(msg.thread_ts.clone());
+                        if force_voice_override {
+                            send_msg = send_msg.force_voice();
+                        } else if suppress_voice_override.unwrap_or(false) {
+                            send_msg = send_msg.suppress_voice();
+                        }
+                        if !turn_attachments.is_empty() {
+                            send_msg = send_msg.with_attachments(turn_attachments);
+                        }
+                        channel.send(&send_msg).await.is_ok()
                     } else {
                         let suppress = suppress_voice_override.unwrap_or(false);
                         match channel
@@ -5965,6 +6008,9 @@ async fn process_channel_message_body(
                         send_msg = send_msg.suppress_voice();
                     } else if force_voice_override {
                         send_msg = send_msg.force_voice();
+                    }
+                    if !turn_attachments.is_empty() {
+                        send_msg = send_msg.with_attachments(turn_attachments);
                     }
                     match channel.send(&send_msg).await {
                         Ok(()) => true,
@@ -21603,6 +21649,7 @@ BTC is currently around $65,000 based on latest tool output."#
                 agent_alias: Some("test-agent"),
                 turn_id: "test-turn",
                 channel_name: "test-channel",
+                channel_reply_target: None,
             },
         )
         .await
