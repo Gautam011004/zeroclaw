@@ -117,6 +117,37 @@ fn sol_credit(tx: &serde_json::Value, recipient: &str) -> Option<i64> {
     Some(post.saturating_sub(pre))
 }
 
+/// The account that paid, taken from the transaction itself.
+///
+/// This is the refund destination, and deriving it here rather than accepting
+/// it as a parameter is the entire security property of refunds: a customer
+/// who talks the agent into issuing one still cannot choose where the money
+/// goes, because no code path lets them name an address.
+///
+/// The fee payer is always account index 0 and is always a signer, so a
+/// transaction that credited the merchant was funded by that account. Requires
+/// the signer flag rather than trusting position alone.
+#[must_use]
+pub fn payer_of(tx: &serde_json::Value) -> Option<String> {
+    let keys = tx
+        .get("transaction")?
+        .get("message")?
+        .get("accountKeys")?
+        .as_array()?;
+    let first = keys.first()?;
+
+    // `jsonParsed` yields objects with a `signer` flag; other encodings yield
+    // bare strings, where index 0 is the fee payer by definition.
+    if let Some(pubkey) = first.get("pubkey").and_then(|p| p.as_str()) {
+        return first
+            .get("signer")
+            .and_then(serde_json::Value::as_bool)
+            .unwrap_or(false)
+            .then(|| pubkey.to_string());
+    }
+    first.as_str().map(str::to_string)
+}
+
 /// Decide whether `tx` settles `invoice`. Pure — no network, no clock.
 #[must_use]
 pub fn verify_transaction(
@@ -183,6 +214,25 @@ pub async fn check_invoice(
         .get_signatures_for_address(&invoice.reference, SIGNATURE_SCAN_LIMIT)
         .await?;
 
+    // The reference-key poll, logged per invoice. This is the line an operator
+    // needs when payments are not settling: it distinguishes "the wallet never
+    // included the reference" (zero signatures) from "a transaction exists but
+    // did not qualify" (signatures found, verdicts logged below). Diagnosing
+    // that without it means querying the chain by hand.
+    ::zeroclaw_log::record!(
+        INFO,
+        ::zeroclaw_log::Event::new(module_path!(), ::zeroclaw_log::Action::Note).with_attrs(
+            ::serde_json::json!({
+                "invoice_id": invoice.id,
+                "reference": invoice.reference,
+                "amount_base_units": invoice.amount_base_units,
+                "currency": invoice.currency,
+                "signatures_found": signatures.len(),
+            })
+        ),
+        "polling reference for payment"
+    );
+
     for sig in signatures.iter().filter(|s| s.succeeded()) {
         let Some(tx) = rpc.get_transaction(&sig.signature).await? else {
             continue;
@@ -228,6 +278,17 @@ pub async fn check_invoice(
         }
     }
 
+    ::zeroclaw_log::record!(
+        INFO,
+        ::zeroclaw_log::Event::new(module_path!(), ::zeroclaw_log::Action::Note).with_attrs(
+            ::serde_json::json!({
+                "invoice_id": invoice.id,
+                "reference": invoice.reference,
+                "candidates_examined": signatures.len(),
+            })
+        ),
+        "no qualifying payment yet; invoice stays pending"
+    );
     store::mark_checked(config, &invoice.id, Utc::now())?;
     Ok(CheckOutcome::StillPending)
 }
@@ -413,6 +474,8 @@ mod tests {
             reply_target: Some("chat-1".to_string()),
             thread_id: None,
             notified_at: None,
+            refunded_at: None,
+            refund_to: None,
         }
     }
 
@@ -441,8 +504,11 @@ mod tests {
     fn sol_tx(recipient: &str, pre: i64, post: i64) -> serde_json::Value {
         serde_json::json!({
             "meta": {"err": null, "preBalances": [0, pre], "postBalances": [0, post]},
+            // Faithful to jsonParsed output: index 0 is the fee payer and is
+            // always flagged `signer`.
             "transaction": {"message": {"accountKeys": [
-                {"pubkey": "Payer1111"}, {"pubkey": recipient}
+                {"pubkey": "Payer1111", "signer": true},
+                {"pubkey": recipient, "signer": false}
             ]}}
         })
     }
@@ -924,5 +990,46 @@ mod tests {
             delivered_for("inv-unpaid").is_empty(),
             "an underpaid invoice must never produce a payment confirmation"
         );
+    }
+
+    #[test]
+    fn the_payer_is_taken_from_the_transaction_not_from_input() {
+        // The refund destination is derived, never supplied. This is what makes
+        // "refund to <attacker address>" unexploitable: there is no parameter.
+        let tx = sol_tx(MERCHANT, 0, 1_000);
+        assert_eq!(payer_of(&tx).as_deref(), Some("Payer1111"));
+    }
+
+    #[test]
+    fn a_non_signing_first_account_yields_no_payer() {
+        // Refuse rather than guess: a transaction whose index 0 is not a signer
+        // is not a shape we understand, and refunding to the wrong account is
+        // worse than refunding to none.
+        let tx = serde_json::json!({
+            "transaction": {"message": {"accountKeys": [
+                {"pubkey": "NotASigner111", "signer": false},
+                {"pubkey": MERCHANT, "signer": false}
+            ]}}
+        });
+        assert!(payer_of(&tx).is_none());
+    }
+
+    #[test]
+    fn payer_extraction_accepts_bare_string_account_keys() {
+        let tx = serde_json::json!({
+            "transaction": {"message": {"accountKeys": ["Payer1111", MERCHANT]}}
+        });
+        assert_eq!(payer_of(&tx).as_deref(), Some("Payer1111"));
+    }
+
+    #[test]
+    fn malformed_transactions_yield_no_payer() {
+        for tx in [
+            serde_json::json!({}),
+            serde_json::json!({"transaction": {}}),
+            serde_json::json!({"transaction": {"message": {"accountKeys": []}}}),
+        ] {
+            assert!(payer_of(&tx).is_none(), "must not invent a payer: {tx}");
+        }
     }
 }

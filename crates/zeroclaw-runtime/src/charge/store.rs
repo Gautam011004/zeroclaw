@@ -46,7 +46,9 @@ fn initialize_schema(conn: &Connection) -> Result<()> {
             channel           TEXT NOT NULL DEFAULT '',
             reply_target      TEXT,
             thread_id         TEXT,
-            notified_at       TEXT
+            notified_at       TEXT,
+            refunded_at       TEXT,
+            refund_to         TEXT
          );
          -- Settlement polls pending invoices oldest-checked first.
          CREATE INDEX IF NOT EXISTS idx_invoices_status_checked
@@ -99,6 +101,14 @@ fn migrate_schema(conn: &Connection) -> Result<()> {
         (
             "notified_at",
             "ALTER TABLE invoices ADD COLUMN notified_at TEXT",
+        ),
+        (
+            "refunded_at",
+            "ALTER TABLE invoices ADD COLUMN refunded_at TEXT",
+        ),
+        (
+            "refund_to",
+            "ALTER TABLE invoices ADD COLUMN refund_to TEXT",
         ),
     ] {
         if !existing.contains(name) {
@@ -166,12 +176,15 @@ fn row_to_invoice(row: &rusqlite::Row<'_>) -> rusqlite::Result<Invoice> {
         reply_target: row.get("reply_target")?,
         thread_id: row.get("thread_id")?,
         notified_at: parse_ts(row.get("notified_at")?),
+        refunded_at: parse_ts(row.get("refunded_at")?),
+        refund_to: row.get("refund_to")?,
     })
 }
 
 const SELECT_COLUMNS: &str = "id, agent_alias, table_number, customer, amount_base_units, \
      currency, reference, recipient, memo, status, tx_signature, created_at, paid_at, \
-     last_checked_at, channel, reply_target, thread_id, notified_at";
+     last_checked_at, channel, reply_target, thread_id, notified_at, refunded_at, \
+     refund_to";
 
 /// Record a newly created payment request. Called by the `charge` tool before
 /// it returns, so the QR the customer scans always has a ledger row behind it.
@@ -181,9 +194,10 @@ pub fn insert_invoice(config: &Config, invoice: &Invoice) -> Result<()> {
             "INSERT INTO invoices (
                 id, agent_alias, table_number, customer, amount_base_units, currency,
                 reference, recipient, memo, status, tx_signature, created_at, paid_at,
-                last_checked_at, channel, reply_target, thread_id, notified_at
+                last_checked_at, channel, reply_target, thread_id, notified_at,
+                refunded_at, refund_to
              ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, NULL, ?11, NULL, NULL,
-                       ?12, ?13, ?14, NULL)",
+                       ?12, ?13, ?14, NULL, NULL, NULL)",
             params![
                 invoice.id,
                 invoice.agent_alias,
@@ -421,6 +435,29 @@ pub fn mark_notified(config: &Config, id: &str, now: DateTime<Utc>) -> Result<bo
     })
 }
 
+/// Record that a refund request was issued, claiming the invoice.
+///
+/// Guarded on `refunded_at IS NULL` and reports whether this call won, so a
+/// repeated request — however it was provoked — cannot produce a second refund
+/// QR for the same payment.
+pub fn mark_refund_issued(
+    config: &Config,
+    id: &str,
+    refund_to: &str,
+    now: DateTime<Utc>,
+) -> Result<bool> {
+    with_initialized_connection(config, |conn| {
+        let changed = conn
+            .execute(
+                "UPDATE invoices SET refunded_at = ?3, refund_to = ?2
+                  WHERE id = ?1 AND status = 'paid' AND refunded_at IS NULL",
+                params![id, refund_to, now.to_rfc3339()],
+            )
+            .context("Failed to record refund issuance")?;
+        Ok(changed > 0)
+    })
+}
+
 /// Move unpaid invoices older than `expiry_hours` out of `pending` so they stop
 /// consuming an RPC call on every settlement run. Returns how many expired.
 ///
@@ -475,6 +512,8 @@ mod tests {
             reply_target: Some("chat-1".to_string()),
             thread_id: None,
             notified_at: None,
+            refunded_at: None,
+            refund_to: None,
         }
     }
 

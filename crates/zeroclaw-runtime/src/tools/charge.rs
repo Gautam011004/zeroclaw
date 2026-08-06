@@ -65,7 +65,7 @@ impl ChargeTool {
 ///
 /// `amount` is the **display** amount, not base units: the spec defines it as a
 /// decimal in user units and the wallet scales by the mint's decimals.
-fn build_payment_url(
+pub(crate) fn build_payment_url(
     recipient: &Pubkey,
     reference: &Pubkey,
     amount: f64,
@@ -285,6 +285,8 @@ impl Tool for ChargeTool {
             reply_target: origin.reply_target.clone(),
             thread_id: origin.thread_id.clone(),
             notified_at: None,
+            refunded_at: None,
+            refund_to: None,
         };
         let charged_to = invoice.charged_to();
 

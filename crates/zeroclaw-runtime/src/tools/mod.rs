@@ -16,6 +16,7 @@ pub mod list_charges;
 pub mod model_switch;
 pub mod param_options;
 pub mod read_skill;
+pub mod refund;
 pub mod schedule;
 pub mod scoped;
 pub mod security_ops;
@@ -139,6 +140,7 @@ pub use file_read::FileReadTool;
 pub use list_charges::ListChargesTool;
 pub use model_switch::ModelSwitchTool;
 pub use read_skill::ReadSkillTool;
+pub use refund::RefundTool;
 pub use schedule::ScheduleTool;
 pub use security_ops::SecurityOpsTool;
 pub use send_message_to_peer::SendMessageToPeerTool;
@@ -673,6 +675,11 @@ pub fn all_tools_with_runtime(
         Arc::new(CalculatorTool::new()),
         Arc::new(WeatherTool::new()),
         Arc::new(ChargeTool::new(Arc::new(root_config.clone()), agent_alias)),
+        Arc::new(ListChargesTool::new(
+            Arc::new(root_config.clone()),
+            agent_alias,
+        )),
+        Arc::new(RefundTool::new(Arc::new(root_config.clone()), agent_alias)),
         Arc::new(CanvasTool::new(canvas_store.unwrap_or_default())),
         Arc::new(TodoWriteTool::new()),
     ];

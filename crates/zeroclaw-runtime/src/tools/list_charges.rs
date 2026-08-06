@@ -247,6 +247,8 @@ mod tests {
             reply_target: Some("chat-1".to_string()),
             thread_id: None,
             notified_at: None,
+            refunded_at: None,
+            refund_to: None,
         };
         store::insert_invoice(&tool.config, &inv).expect("seed");
         inv

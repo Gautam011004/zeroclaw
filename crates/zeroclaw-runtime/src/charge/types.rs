@@ -92,6 +92,16 @@ pub struct Invoice {
     /// moment payment lands, the invoice is still correctly paid, and the
     /// confirmation must be retryable without re-settling anything.
     pub notified_at: Option<DateTime<Utc>>,
+    /// When a refund request was issued for this invoice.
+    ///
+    /// Set once a refund QR has been handed to the merchant. It does **not**
+    /// mean the refund settled — no key is held here, so the merchant's own
+    /// wallet performs the transfer. It exists to stop a second refund being
+    /// issued for the same payment.
+    pub refunded_at: Option<DateTime<Utc>>,
+    /// Address the refund was made payable to, derived from the paying
+    /// transaction and never from caller input.
+    pub refund_to: Option<String>,
 }
 
 impl Invoice {
@@ -102,6 +112,17 @@ impl Invoice {
             self.amount_base_units,
             &self.currency,
         )
+    }
+
+    /// Whether this invoice is eligible for a refund request.
+    ///
+    /// Only a settled payment can be refunded, and only once. Both conditions
+    /// are checked against the ledger rather than argued about in a prompt.
+    #[must_use]
+    pub fn is_refundable(&self) -> bool {
+        self.status == InvoiceStatus::Paid
+            && self.refunded_at.is_none()
+            && self.tx_signature.is_some()
     }
 
     /// Whether a payment confirmation can be delivered for this invoice.
