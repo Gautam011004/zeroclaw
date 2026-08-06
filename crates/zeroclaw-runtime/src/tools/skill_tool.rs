@@ -274,7 +274,6 @@ impl Tool for SkillShellTool {
                         None
                     } else {
                         Some(stderr)
-                    
                     },
                     attachments: Vec::new(),
                 })

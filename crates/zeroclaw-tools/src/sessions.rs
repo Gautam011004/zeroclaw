@@ -32,7 +32,7 @@ impl SessionValidationError {
             success: false,
             output: ToolOutput::default(),
             error: Some(self.message().into()),
-            attachments: Vec::new()
+            attachments: Vec::new(),
         }
     }
 }

@@ -420,7 +420,6 @@ impl Tool for ShellTool {
                             None
                         } else {
                             Some(stderr)
-                        
                         },
                         attachments: Vec::new(),
                     }

@@ -90,9 +90,8 @@ fn unsupported_runtime(runtime: &DeviceRuntime, tool: &str) -> ToolResult {
         error: Some(format!(
             "{runtime} runtime is not yet supported for {tool} — coming soon"
         )),
-    
-    attachments: Vec::new(),
-    },
+        attachments: Vec::new(),
+    }
 }
 
 /// Run an `mpremote` command with a timeout and return (stdout, stderr).

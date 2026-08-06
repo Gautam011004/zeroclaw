@@ -197,7 +197,6 @@ fn execute_evaluate_constraints(
             None
         } else {
             Some("one or more constraints violated".into())
-        
         },
         attachments: Vec::new(),
     })

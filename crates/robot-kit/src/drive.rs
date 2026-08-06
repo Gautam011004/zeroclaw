@@ -249,7 +249,6 @@ impl Tool for DriveTool {
                     success: false,
                     output: String::new(),
                     error: Some("Rate limited: wait 1 second between drive commands".to_string()),
-                    attachments: Vec::new(),
                 });
             }
             *last = Some(std::time::Instant::now());
@@ -266,7 +265,6 @@ impl Tool for DriveTool {
                     success: true,
                     output: "Robot stopped".to_string(),
                     error: None,
-                    attachments: Vec::new(),
                 });
             }
             "forward" => {
@@ -348,7 +346,6 @@ impl Tool for DriveTool {
                     success: false,
                     output: String::new(),
                     error: Some(format!("Unknown action: {action}")),
-                    attachments: Vec::new(),
                 });
             }
         };
@@ -364,7 +361,6 @@ impl Tool for DriveTool {
                 action, linear_x, linear_y, angular_z, duration_ms
             ),
             error: None,
-            attachments: Vec::new(),
         })
     }
 }

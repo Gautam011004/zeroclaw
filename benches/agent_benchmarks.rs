@@ -125,6 +125,7 @@ impl Tool for NoopTool {
             success: true,
             output: ToolOutput::default(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 }

@@ -1,6 +1,6 @@
+use crate::media::MediaAttachment;
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
-use crate::media::MediaAttachment;
 
 #[macro_export]
 macro_rules! tool_attribution {
@@ -207,8 +207,8 @@ impl ToolResult {
     }
 
     pub fn ok_with_attachments(
-    output: impl Into<ToolOutput>,
-    attachments: Vec<MediaAttachment>,
+        output: impl Into<ToolOutput>,
+        attachments: Vec<MediaAttachment>,
     ) -> Self {
         Self {
             success: true,
@@ -216,7 +216,7 @@ impl ToolResult {
             attachments,
             error: None,
         }
-    }   
+    }
 }
 
 /// Loud, actionable banner that filesystem-touching tools surface when the

@@ -236,7 +236,7 @@ impl Tool for DeliverFileTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -249,7 +249,7 @@ impl Tool for DeliverFileTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to resolve file path: {e}")),
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -259,7 +259,7 @@ impl Tool for DeliverFileTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Path escapes workspace directory: {path}")),
-                attachments: Vec::new()
+                attachments: Vec::new(),
             });
         }
 
@@ -276,7 +276,7 @@ impl Tool for DeliverFileTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e),
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -307,7 +307,7 @@ impl Tool for DeliverFileTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to materialize delivery: {}", e.0)),
-                    attachments: Vec::new()
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -352,7 +352,7 @@ impl Tool for DeliverFileTool {
             success: true,
             output: ToolOutput::json_with_text(data, summary),
             error: None,
-            attachments: Vec::new()
+            attachments: Vec::new(),
         })
     }
 }

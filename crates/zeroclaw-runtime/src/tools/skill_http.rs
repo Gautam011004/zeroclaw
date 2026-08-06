@@ -172,7 +172,6 @@ impl Tool for SkillHttpTool {
                 None
             } else {
                 Some(format!("HTTP {}", status))
-            
             },
             attachments: Vec::new(),
         })

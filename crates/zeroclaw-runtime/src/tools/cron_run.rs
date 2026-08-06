@@ -141,7 +141,6 @@ impl Tool for CronRunTool {
                 None
             } else {
                 Some("cron job execution failed".to_string())
-            
             },
             attachments: Vec::new(),
         })

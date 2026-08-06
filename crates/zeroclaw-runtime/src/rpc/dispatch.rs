@@ -4731,7 +4731,8 @@ fn notification_for_turn_event(
             session_id: session_id.to_string(),
             tool_call_id: id.clone(),
             name: name.clone(),
-            raw_output: output.clone() },
+            raw_output: output.clone(),
+        },
         TurnEvent::ApprovalRequest {
             request_id,
             tool_name,
@@ -6405,8 +6406,8 @@ mod tests {
             id: "tc_1".into(),
             name: "bash".into(),
             output: "file.txt".into(),
-            artifact: None
-         };
+            artifact: None,
+        };
         let json = notification_for_turn_event("s1", &event, None).unwrap();
         let v = parse(&json);
         assert_eq!(v["params"]["type"], "tool_result");

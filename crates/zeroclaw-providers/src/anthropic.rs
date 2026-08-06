@@ -2392,7 +2392,8 @@ data: {\"type\":\"message_stop\"}\n\n";
         let content = NativeContentOut::ToolResult {
             tool_use_id: "tool_123".to_string(),
             content: "Result data".to_string(),
-            cache_control: Some(CacheControl::ephemeral()) };
+            cache_control: Some(CacheControl::ephemeral()),
+        };
         let json = serde_json::to_string(&content).unwrap();
         assert!(json.contains(r#""type":"tool_result""#));
         assert!(json.contains("tool_123"));
@@ -2514,7 +2515,8 @@ data: {\"type\":\"message_stop\"}\n\n";
             content: vec![NativeContentOut::ToolResult {
                 tool_use_id: "tool_123".to_string(),
                 content: "Result".to_string(),
-                cache_control: None }],
+                cache_control: None,
+            }],
         }];
 
         AnthropicModelProvider::apply_cache_to_last_message(&mut messages);

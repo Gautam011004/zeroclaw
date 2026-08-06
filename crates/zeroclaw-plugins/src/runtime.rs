@@ -151,9 +151,8 @@ fn into_tool_result(result: WitToolResult) -> ToolResult {
         success: result.success,
         output: result.output.into(),
         error: result.error,
-    
-    attachments: Vec::new(),
-    },
+        attachments: Vec::new(),
+    }
 }
 
 /// Merge the plugin's resolved config under the reserved `__config` key,

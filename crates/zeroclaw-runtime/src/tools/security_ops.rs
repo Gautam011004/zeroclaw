@@ -181,7 +181,6 @@ impl SecurityOpsTool {
                 Some(result.message)
             } else {
                 None
-            
             },
             attachments: Vec::new(),
         })
