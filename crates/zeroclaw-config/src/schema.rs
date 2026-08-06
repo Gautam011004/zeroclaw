@@ -7799,6 +7799,13 @@ pub struct ChargeConfig {
     /// JSON-RPC endpoint used for settlement checks. Empty means the public
     /// endpoint for `network`, which rate-limits aggressively — set a
     /// dedicated provider URL before polling on any real schedule.
+    ///
+    /// Marked secret: provider URLs routinely embed the API key in the path or
+    /// query (`https://…/?api-key=…`), so the endpoint *is* the credential. It
+    /// is encrypted at rest and masked in `config list` like any other key.
+    /// Operators running their own node can point this anywhere.
+    #[secret]
+    #[credential_class = "encrypted_secret"]
     #[serde(default)]
     pub rpc_url: String,
     /// SPL mint address for USDC on the configured `network`. Defaults to the
