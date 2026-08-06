@@ -4101,6 +4101,7 @@ mod tests {
                 id: "tc-12345".to_string(),
                 name: "shell".to_string(),
                 output: "file1.txt\nfile2.txt".to_string(),
+                artifact: None,
             },
         );
         let result_value =

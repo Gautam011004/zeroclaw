@@ -290,6 +290,7 @@ impl Tool for ShellTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(reason),
+                    attachments: Vec::new(),
                 });
             }
         }
@@ -307,6 +308,7 @@ impl Tool for ShellTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to build runtime command: {e}")),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -379,6 +381,7 @@ impl Tool for ShellTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to spawn command: {e}")),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -418,6 +421,7 @@ impl Tool for ShellTool {
                         } else {
                             Some(stderr)
                         },
+                        attachments: Vec::new(),
                     }
                 }
                 Ok(Err(e)) => {
@@ -426,6 +430,7 @@ impl Tool for ShellTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Failed to execute command: {e}")),
+                        attachments: Vec::new(),
                     }
                 }
                 Err(_) => {
@@ -437,6 +442,7 @@ impl Tool for ShellTool {
                         error: Some(format!(
                             "Command timed out after {timeout_secs}s and was killed"
                         )),
+                        attachments: Vec::new(),
                     }
                 }
             };

@@ -64,6 +64,7 @@ impl ProxyConfigTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: autonomy is read-only".into()),
+                attachments: Vec::new(),
             });
         }
 
@@ -72,6 +73,7 @@ impl ProxyConfigTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: rate limit exceeded".into()),
+                attachments: Vec::new(),
             });
         }
 
@@ -186,6 +188,7 @@ impl ProxyConfigTool {
             }))?
             .into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 
@@ -203,6 +206,7 @@ impl ProxyConfigTool {
             }))?
             .into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 
@@ -324,6 +328,7 @@ impl ProxyConfigTool {
             }))?
             .into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 
@@ -352,6 +357,7 @@ impl ProxyConfigTool {
             }))?
             .into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 
@@ -383,6 +389,7 @@ impl ProxyConfigTool {
             }))?
             .into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 
@@ -396,6 +403,7 @@ impl ProxyConfigTool {
             }))?
             .into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 }
@@ -495,6 +503,7 @@ impl Tool for ProxyConfigTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error.to_string()),
+                attachments: Vec::new(),
             }),
         }
     }

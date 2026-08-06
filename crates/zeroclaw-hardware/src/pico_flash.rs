@@ -72,6 +72,7 @@ impl Tool for PicoFlashTool {
                      This will overwrite the firmware on the connected Pico."
                         .to_string(),
                 ),
+                attachments: Vec::new(),
             });
         }
 
@@ -88,6 +89,7 @@ impl Tool for PicoFlashTool {
                          then try again."
                             .to_string(),
                     ),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -107,6 +109,7 @@ impl Tool for PicoFlashTool {
                     success: false,
                     output: String::new().into(),
                     error: Some(format!("firmware error: {e}")),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -117,6 +120,7 @@ impl Tool for PicoFlashTool {
                 success: false,
                 output: String::new().into(),
                 error: Some(format!("flash failed: {e}")),
+                attachments: Vec::new(),
             });
         }
 
@@ -140,6 +144,7 @@ impl Tool for PicoFlashTool {
                          Unplug and replug the Pico, then restart ZeroClaw.",
                         mount.display()
                     )),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -231,6 +236,7 @@ impl Tool for PicoFlashTool {
                     )
                     .into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             None => Ok(ToolResult {
@@ -242,6 +248,7 @@ impl Tool for PicoFlashTool {
                 )
                 .into(),
                 error: None,
+                attachments: Vec::new(),
             }),
         }
     }

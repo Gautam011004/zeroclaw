@@ -650,6 +650,12 @@ pub struct Config {
     #[group = "Tools"]
     pub shell_tool: ShellToolConfig,
 
+    /// Solana Pay charge tool configuration (`[charge]`).
+    #[serde(default)]
+    #[nested]
+    #[group = "Tools"]
+    pub charge: ChargeConfig,
+
     /// Escalation routing configuration (`[escalation]`).
     #[serde(default)]
     #[nested]
@@ -7760,6 +7766,168 @@ impl Default for ShellToolConfig {
     fn default() -> Self {
         Self {
             timeout_secs: default_shell_tool_timeout_secs(),
+        }
+    }
+}
+
+// ── Solana Pay charge tool ───────────────────────────────────────
+
+/// Configuration for the `charge` tool (`[charge]`).
+///
+/// Creates Solana Pay payment requests and records them in an invoice ledger
+/// at `<data_dir>/charge/invoices.db` (override with `store_path`).
+///
+/// **Amounts are stored and compared in integer base units**, never floats:
+/// USDC has 6 decimals, native SOL 9 (lamports). On-chain balances are
+/// integers, so a float invoice compared against them rounds — and a correct
+/// payment can read as underpaid. `decimals_for` resolves the scale.
+#[derive(Debug, Clone, Serialize, Deserialize, Configurable)]
+#[cfg_attr(feature = "schema-export", derive(schemars::JsonSchema))]
+#[prefix = "charge"]
+pub struct ChargeConfig {
+    /// Enable the `charge` tool.
+    #[serde(default = "default_true")]
+    pub enabled: bool,
+    /// Base58 wallet address that receives payments. Required: the tool
+    /// refuses to issue a charge while this is empty rather than direct funds
+    /// at a placeholder.
+    #[serde(default)]
+    pub merchant_wallet: String,
+    /// Solana cluster: `devnet`, `testnet`, or `mainnet-beta`.
+    #[serde(default = "default_charge_network")]
+    pub network: String,
+    /// JSON-RPC endpoint used for settlement checks. Empty means the public
+    /// endpoint for `network`, which rate-limits aggressively — set a
+    /// dedicated provider URL before polling on any real schedule.
+    #[serde(default)]
+    pub rpc_url: String,
+    /// SPL mint address for USDC on the configured `network`. Defaults to the
+    /// devnet mint; **this must be changed for mainnet** or payments will be
+    /// requested in a worthless test token.
+    #[serde(default = "default_charge_usdc_mint")]
+    pub usdc_mint: String,
+    /// Hours before an unpaid invoice is marked `expired` and dropped from
+    /// settlement polling. Bounds the per-run RPC cost.
+    #[serde(default = "default_charge_invoice_expiry_hours")]
+    pub invoice_expiry_hours: u64,
+    /// Maximum invoices verified per settlement run, oldest first. Keeps a
+    /// backlog from bursting past RPC rate limits.
+    #[serde(default = "default_charge_max_checks_per_run")]
+    pub max_checks_per_run: usize,
+    /// Override the invoice database path. Empty uses
+    /// `<data_dir>/charge/invoices.db`.
+    #[serde(default)]
+    pub store_path: String,
+    /// Seconds between settlement passes in the daemon's charge worker.
+    /// `0` disables the worker; `charge check` still works by hand.
+    #[serde(default = "default_charge_settlement_interval_secs")]
+    pub settlement_interval_secs: u64,
+}
+
+fn default_charge_settlement_interval_secs() -> u64 {
+    120
+}
+
+fn default_charge_network() -> String {
+    "devnet".to_string()
+}
+
+/// Circle's USDC mint on devnet.
+fn default_charge_usdc_mint() -> String {
+    "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU".to_string()
+}
+
+fn default_charge_invoice_expiry_hours() -> u64 {
+    24
+}
+
+fn default_charge_max_checks_per_run() -> usize {
+    50
+}
+
+impl Default for ChargeConfig {
+    fn default() -> Self {
+        Self {
+            enabled: default_true(),
+            merchant_wallet: String::new(),
+            network: default_charge_network(),
+            rpc_url: String::new(),
+            usdc_mint: default_charge_usdc_mint(),
+            invoice_expiry_hours: default_charge_invoice_expiry_hours(),
+            max_checks_per_run: default_charge_max_checks_per_run(),
+            store_path: String::new(),
+            settlement_interval_secs: default_charge_settlement_interval_secs(),
+        }
+    }
+}
+
+impl ChargeConfig {
+    /// Decimal places for `currency`, used to convert a display amount to the
+    /// integer base units stored in the ledger and compared on-chain.
+    /// `None` for a currency this tool cannot price.
+    ///
+    /// Deliberately limited to the two assets that are wired end to end:
+    /// native **SOL**, and **USDC** via the single `usdc_mint` setting.
+    ///
+    /// Adding a ticker here alone is not enough and is actively dangerous —
+    /// the payment URL decides `spl-token` per currency and settlement decides
+    /// which mint to credit. A currency priced here but missing from those two
+    /// would invoice in the wrong asset (a bare URL requests native SOL) and
+    /// verify against the wrong mint. Any new asset needs a mint in config and
+    /// both of those paths updated together.
+    #[must_use]
+    pub fn decimals_for(currency: &str) -> Option<u32> {
+        match currency.trim().to_ascii_uppercase().as_str() {
+            "SOL" => Some(9),
+            "USDC" => Some(6),
+            _ => None,
+        }
+    }
+
+    /// Convert a display amount into integer base units, rejecting values that
+    /// cannot be represented exactly (more precision than the currency has) or
+    /// that overflow. Rounds to the nearest base unit within tolerance so
+    /// binary-float artefacts like `10.15 -> 10149999.99` do not truncate.
+    pub fn to_base_units(amount: f64, currency: &str) -> Result<i64, String> {
+        let decimals = Self::decimals_for(currency)
+            .ok_or_else(|| format!("unsupported currency: {currency}"))?;
+        if !amount.is_finite() || amount <= 0.0 {
+            return Err(format!("amount must be a positive number, got {amount}"));
+        }
+        let scale = 10f64.powi(decimals as i32);
+        let scaled = amount * scale;
+        if scaled >= i64::MAX as f64 {
+            return Err(format!("amount {amount} {currency} is too large"));
+        }
+        let rounded = scaled.round();
+        // Reject genuine over-precision (e.g. 0.0000001 USDC) while tolerating
+        // float representation error on legitimate values.
+        if (scaled - rounded).abs() > 0.001 {
+            return Err(format!(
+                "{amount} {currency} has more precision than {currency} supports ({decimals} decimals)"
+            ));
+        }
+        Ok(rounded as i64)
+    }
+
+    /// Render integer base units back to a display amount.
+    #[must_use]
+    pub fn from_base_units(base_units: i64, currency: &str) -> f64 {
+        let decimals = Self::decimals_for(currency).unwrap_or(0);
+        base_units as f64 / 10f64.powi(decimals as i32)
+    }
+
+    /// The JSON-RPC endpoint to use, falling back to the public endpoint for
+    /// the configured network.
+    #[must_use]
+    pub fn effective_rpc_url(&self) -> String {
+        if !self.rpc_url.trim().is_empty() {
+            return self.rpc_url.trim().to_string();
+        }
+        match self.network.trim().to_ascii_lowercase().as_str() {
+            "mainnet" | "mainnet-beta" => "https://api.mainnet-beta.solana.com".to_string(),
+            "testnet" => "https://api.testnet.solana.com".to_string(),
+            _ => "https://api.devnet.solana.com".to_string(),
         }
     }
 }
@@ -17539,6 +17707,7 @@ impl Default for Config {
             opencode_cli: OpenCodeCliConfig::default(),
             sop: SopConfig::default(),
             shell_tool: ShellToolConfig::default(),
+            charge: ChargeConfig::default(),
             escalation: EscalationConfig::default(),
         }
     }
@@ -24930,6 +25099,7 @@ auto_save = true
             opencode_cli: OpenCodeCliConfig::default(),
             sop: SopConfig::default(),
             shell_tool: ShellToolConfig::default(),
+            charge: ChargeConfig::default(),
             escalation: EscalationConfig::default(),
             env_overridden_paths: std::collections::HashSet::new(),
             pre_override_snapshots: std::collections::HashMap::new(),
@@ -25802,6 +25972,7 @@ default_temperature = 0.7
             opencode_cli: OpenCodeCliConfig::default(),
             sop: SopConfig::default(),
             shell_tool: ShellToolConfig::default(),
+            charge: ChargeConfig::default(),
             escalation: EscalationConfig::default(),
             env_overridden_paths: std::collections::HashSet::new(),
             pre_override_snapshots: std::collections::HashMap::new(),
@@ -36700,5 +36871,81 @@ model_provider = \"ollama.default\"
             ..Default::default()
         };
         assert!(agent.is_dispatchable());
+    }
+}
+
+#[cfg(test)]
+mod charge_config_tests {
+    use super::ChargeConfig;
+
+    #[test]
+    fn base_units_use_the_currency_scale() {
+        assert_eq!(ChargeConfig::to_base_units(10.0, "USDC"), Ok(10_000_000));
+        assert_eq!(ChargeConfig::to_base_units(1.0, "SOL"), Ok(1_000_000_000));
+        assert_eq!(ChargeConfig::to_base_units(0.5, "usdc"), Ok(500_000));
+    }
+
+    #[test]
+    fn float_representation_error_does_not_truncate_a_cent() {
+        // 10.15 * 1e6 is 10149999.999... in binary float. A bare `as i64`
+        // truncates to 10_149_999 and the invoice is a base unit short, so a
+        // correct on-chain payment would verify as underpaid forever.
+        assert_eq!(ChargeConfig::to_base_units(10.15, "USDC"), Ok(10_150_000));
+        assert_eq!(ChargeConfig::to_base_units(0.07, "USDC"), Ok(70_000));
+        assert_eq!(ChargeConfig::to_base_units(1.1, "SOL"), Ok(1_100_000_000));
+    }
+
+    #[test]
+    fn round_trips_through_display_form() {
+        for (amount, currency) in [(10.0, "USDC"), (0.25, "SOL"), (99.99, "USDC")] {
+            let base = ChargeConfig::to_base_units(amount, currency).expect("convertible");
+            let back = ChargeConfig::from_base_units(base, currency);
+            assert!(
+                (back - amount).abs() < f64::EPSILON * 100.0,
+                "{amount} {currency} round-tripped to {back}"
+            );
+        }
+    }
+
+    #[test]
+    fn rejects_over_precision_rather_than_silently_rounding() {
+        // Sub-base-unit precision must be an error: silently rounding it would
+        // invoice an amount the customer was never quoted.
+        assert!(ChargeConfig::to_base_units(0.000_000_1, "USDC").is_err());
+        assert!(ChargeConfig::to_base_units(1.000_000_5, "USDC").is_err());
+    }
+
+    #[test]
+    fn rejects_nonpositive_overflow_and_unknown_currency() {
+        assert!(ChargeConfig::to_base_units(0.0, "USDC").is_err());
+        assert!(ChargeConfig::to_base_units(-1.0, "USDC").is_err());
+        assert!(ChargeConfig::to_base_units(f64::NAN, "USDC").is_err());
+        assert!(ChargeConfig::to_base_units(f64::INFINITY, "USDC").is_err());
+        assert!(ChargeConfig::to_base_units(1e30, "USDC").is_err());
+        assert!(ChargeConfig::to_base_units(1.0, "DOGE").is_err());
+        // USDT is priced nowhere else in the charge path: the payment URL would
+        // omit `spl-token` (requesting native SOL for the same number) and
+        // settlement would check the USDC mint. Reject it up front rather than
+        // issue an invoice in the wrong asset.
+        assert!(ChargeConfig::to_base_units(1.0, "USDT").is_err());
+    }
+
+    #[test]
+    fn rpc_url_falls_back_per_network_and_honours_an_override() {
+        let mut cfg = ChargeConfig::default();
+        assert!(cfg.effective_rpc_url().contains("devnet"));
+
+        cfg.network = "mainnet-beta".to_string();
+        assert!(cfg.effective_rpc_url().contains("mainnet-beta"));
+
+        cfg.rpc_url = "  https://rpc.example.com  ".to_string();
+        assert_eq!(cfg.effective_rpc_url(), "https://rpc.example.com");
+    }
+
+    #[test]
+    fn merchant_wallet_has_no_default() {
+        // Must stay empty so the tool fails closed rather than directing real
+        // funds at a hardcoded placeholder address.
+        assert!(ChargeConfig::default().merchant_wallet.is_empty());
     }
 }

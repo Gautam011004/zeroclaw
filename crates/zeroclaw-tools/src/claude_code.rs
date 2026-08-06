@@ -94,6 +94,7 @@ impl Tool for ClaudeCodeTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
+                attachments: Vec::new(),
             });
         }
 
@@ -152,6 +153,7 @@ impl Tool for ClaudeCodeTool {
                             "working_directory '{}' does not exist or is not accessible",
                             wd
                         )),
+                        attachments: Vec::new(),
                     });
                 }
             };
@@ -165,6 +167,7 @@ impl Tool for ClaudeCodeTool {
                             "workspace directory '{}' does not exist or is not accessible",
                             workspace.display()
                         )),
+                        attachments: Vec::new(),
                     });
                 }
             };
@@ -177,6 +180,7 @@ impl Tool for ClaudeCodeTool {
                         wd,
                         workspace.display()
                     )),
+                    attachments: Vec::new(),
                 });
             }
             canonical_wd
@@ -287,6 +291,7 @@ impl Tool for ClaudeCodeTool {
                         } else {
                             Some(stderr)
                         },
+                        attachments: Vec::new(),
                     })
                 } else {
                     // JSON parse failed — return raw stdout (defensive)
@@ -298,6 +303,7 @@ impl Tool for ClaudeCodeTool {
                         } else {
                             Some(stderr)
                         },
+                        attachments: Vec::new(),
                     })
                 }
             }
@@ -315,6 +321,7 @@ impl Tool for ClaudeCodeTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(msg),
+                    attachments: Vec::new(),
                 })
             }
             Err(_) => {
@@ -327,6 +334,7 @@ impl Tool for ClaudeCodeTool {
                         "Claude Code timed out after {}s and was killed",
                         self.config.timeout_secs
                     )),
+                    attachments: Vec::new(),
                 })
             }
         }

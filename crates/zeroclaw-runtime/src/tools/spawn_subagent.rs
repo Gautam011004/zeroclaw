@@ -98,6 +98,7 @@ impl Tool for SpawnSubagentTool {
                     "spawn_subagent: a subagent may not spawn its own subagents (depth-1 cap)"
                         .into(),
                 ),
+                attachments: Vec::new(),
             });
         }
 
@@ -114,6 +115,7 @@ impl Tool for SpawnSubagentTool {
                         "spawn_subagent: refused — agent '{}' risk_profile does not list spawn_subagent in allowed_tools",
                         self.parent_alias
                     )),
+                    attachments: Vec::new(),
                 });
             }
         }
@@ -134,6 +136,7 @@ impl Tool for SpawnSubagentTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("Missing or empty 'prompt' parameter".into()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -146,6 +149,7 @@ impl Tool for SpawnSubagentTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
+                attachments: Vec::new(),
             });
         }
 
@@ -162,6 +166,7 @@ impl Tool for SpawnSubagentTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("subagent spawn failed: {e:#}")),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -266,11 +271,13 @@ impl Tool for SpawnSubagentTool {
                     response.into()
                 },
                 error: None,
+                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("subagent run failed: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }

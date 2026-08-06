@@ -151,6 +151,7 @@ fn into_tool_result(result: WitToolResult) -> ToolResult {
         success: result.success,
         output: result.output.into(),
         error: result.error,
+        attachments: Vec::new(),
     }
 }
 

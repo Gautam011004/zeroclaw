@@ -45,6 +45,9 @@ pub struct TurnMeta<'a> {
     pub parent_agent_alias: Option<&'a str>,
     pub turn_id: &'a str,
     pub channel_name: &'a str,
+    /// Where a reply goes on `channel_name`. Threaded through so a tool that
+    /// schedules deferred work can record where to deliver the result.
+    pub channel_reply_target: Option<&'a str>,
 }
 
 impl<'a> TurnCtx<'a> {
@@ -54,6 +57,7 @@ impl<'a> TurnCtx<'a> {
             parent_agent_alias: self.parent_agent_alias,
             turn_id: self.turn_id,
             channel_name: self.channel_name,
+            channel_reply_target: self.channel_reply_target,
         }
     }
 }

@@ -676,6 +676,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -708,6 +709,7 @@ mod tests {
                 agent_alias: Some("default"),
                 turn_id: "turn-42",
                 channel_name: "cli",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -757,6 +759,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -782,6 +785,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -815,6 +819,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -855,6 +860,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -890,6 +896,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -923,6 +930,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -961,6 +969,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -1002,6 +1011,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -1044,6 +1054,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -1059,6 +1070,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -1181,6 +1193,7 @@ mod tests {
                         agent_alias: None,
                         turn_id: "t",
                         channel_name: "test",
+                        channel_reply_target: None,
                     },
                 )
                 .await
@@ -1388,6 +1401,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -1426,6 +1440,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -1460,6 +1475,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -1485,6 +1501,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -1541,6 +1558,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -1596,6 +1614,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -1727,6 +1746,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;
@@ -1813,6 +1833,7 @@ mod tests {
                 agent_alias: None,
                 turn_id: "t",
                 channel_name: "test",
+                channel_reply_target: None,
             },
         )
         .await;

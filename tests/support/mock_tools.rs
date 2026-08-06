@@ -37,6 +37,7 @@ impl Tool for EchoTool {
             success: true,
             output: msg.into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 }
@@ -76,6 +77,7 @@ impl Tool for CountingTool {
             success: true,
             output: format!("call #{}", *c).into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 }
@@ -99,6 +101,7 @@ impl Tool for FailingTool {
             success: false,
             output: ToolOutput::default(),
             error: Some("Service unavailable: connection timeout".into()),
+            attachments: Vec::new(),
         })
     }
 }
@@ -149,6 +152,7 @@ impl Tool for RecordingTool {
             success: true,
             output: output.into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 }

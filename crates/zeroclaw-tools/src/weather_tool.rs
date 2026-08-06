@@ -408,6 +408,7 @@ impl Tool for WeatherTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("Missing required parameter 'location'".into()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -431,12 +432,14 @@ impl Tool for WeatherTool {
                     success: true,
                     output: output.into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(e.to_string()),
+                attachments: Vec::new(),
             }),
         }
     }

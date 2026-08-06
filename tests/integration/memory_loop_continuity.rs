@@ -265,6 +265,7 @@ async fn agent_survives_large_tool_output() {
                 success: true,
                 output: output.into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }

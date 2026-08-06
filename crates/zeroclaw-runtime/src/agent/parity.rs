@@ -187,6 +187,7 @@ async fn parity_l1_engine_honors_excluded_tools() {
         shared_budget: None,
         channel: None,
         collected_receipts: None,
+        collected_attachments: None,
         event_tx: None,
         steering: None,
         new_messages_out: None,

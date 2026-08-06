@@ -44,6 +44,7 @@ async fn resolve(
         success: false,
         output: String::new().into(),
         error: Some(msg),
+        attachments: Vec::new(),
     })
 }
 
@@ -113,6 +114,7 @@ impl Tool for I2cScanTool {
                     success: true,
                     output: output.into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Ok(resp) => Ok(ToolResult {
@@ -122,11 +124,13 @@ impl Tool for I2cScanTool {
                     resp.error
                         .unwrap_or_else(|| "i2c_scan: device returned ok:false".to_string()),
                 ),
+                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: String::new().into(),
                 error: Some(format!("transport error: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }
@@ -190,6 +194,7 @@ impl Tool for I2cReadTool {
                     success: false,
                     output: String::new().into(),
                     error: Some("missing required parameter: addr".to_string()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -223,6 +228,7 @@ impl Tool for I2cReadTool {
                     success: true,
                     output: format!("I2C read from addr {addr:#04x}: [{hex}]").into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Ok(resp) => Ok(ToolResult {
@@ -232,11 +238,13 @@ impl Tool for I2cReadTool {
                     resp.error
                         .unwrap_or_else(|| "i2c_read: device returned ok:false".to_string()),
                 ),
+                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: String::new().into(),
                 error: Some(format!("transport error: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }
@@ -295,6 +303,7 @@ impl Tool for I2cWriteTool {
                     success: false,
                     output: String::new().into(),
                     error: Some("missing required parameter: addr".to_string()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -305,6 +314,7 @@ impl Tool for I2cWriteTool {
                     success: false,
                     output: String::new().into(),
                     error: Some("missing required parameter: bytes".to_string()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -327,6 +337,7 @@ impl Tool for I2cWriteTool {
                     success: true,
                     output: format!("I2C write to addr {addr:#04x}: {n} byte(s) written").into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Ok(resp) => Ok(ToolResult {
@@ -336,11 +347,13 @@ impl Tool for I2cWriteTool {
                     resp.error
                         .unwrap_or_else(|| "i2c_write: device returned ok:false".to_string()),
                 ),
+                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: String::new().into(),
                 error: Some(format!("transport error: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }
@@ -396,6 +409,7 @@ impl Tool for SpiTransferTool {
                     success: false,
                     output: String::new().into(),
                     error: Some("missing required parameter: bytes".to_string()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -424,6 +438,7 @@ impl Tool for SpiTransferTool {
                     success: true,
                     output: format!("SPI transfer complete. Received: [{hex}]").into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Ok(resp) => Ok(ToolResult {
@@ -433,11 +448,13 @@ impl Tool for SpiTransferTool {
                     resp.error
                         .unwrap_or_else(|| "spi_transfer: device returned ok:false".to_string()),
                 ),
+                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: String::new().into(),
                 error: Some(format!("transport error: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }
@@ -504,6 +521,7 @@ impl Tool for GpioAardvarkTool {
                     success: false,
                     output: String::new().into(),
                     error: Some("missing required parameter: action".to_string()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -528,6 +546,7 @@ impl Tool for GpioAardvarkTool {
                     success: false,
                     output: String::new().into(),
                     error: Some(format!("unknown action '{other}'; use 'set' or 'get'")),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -550,6 +569,7 @@ impl Tool for GpioAardvarkTool {
                     success: true,
                     output: output.into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Ok(resp) => Ok(ToolResult {
@@ -559,11 +579,13 @@ impl Tool for GpioAardvarkTool {
                     resp.error
                         .unwrap_or_else(|| "gpio_aardvark: device returned ok:false".to_string()),
                 ),
+                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: String::new().into(),
                 error: Some(format!("transport error: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }

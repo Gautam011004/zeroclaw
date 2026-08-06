@@ -113,6 +113,7 @@ impl SerialTransport {
             success: ok,
             output: result.into(),
             error,
+            attachments: Vec::new(),
         })
     }
 

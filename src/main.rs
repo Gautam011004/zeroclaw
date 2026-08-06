@@ -421,9 +421,10 @@ use config::Config;
 
 // Re-export so binary modules can use crate::<CommandEnum> while keeping a single source of truth.
 pub use zeroclaw::{
-    AgentsCommands, ChannelCommands, ChannelsCommands, CronCommands, GatewayCommands,
-    HardwareCommands, IntegrationCommands, MigrateCommands, PeripheralCommands, ProvidersCommands,
-    ServiceCommands, SkillBundleCommands, SkillCommands, SopCommands, SopGraphFormat,
+    AgentsCommands, ChannelCommands, ChannelsCommands, ChargeCommands, CronCommands,
+    GatewayCommands, HardwareCommands, IntegrationCommands, MigrateCommands, PeripheralCommands,
+    ProvidersCommands, ServiceCommands, SkillBundleCommands, SkillCommands, SopCommands,
+    SopGraphFormat,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, ValueEnum)]
@@ -803,6 +804,15 @@ Examples:
     Cron {
         #[command(subcommand)]
         cron_command: CronCommands,
+    },
+
+    /// Inspect and settle Solana Pay charges
+    #[command(after_help = "EXAMPLES:
+  zeroclaw charge check          Verify pending invoices against the chain
+  zeroclaw charge list           Show open (unpaid) invoices")]
+    Charge {
+        #[command(subcommand)]
+        charge_command: ChargeCommands,
     },
 
     /// Manage model_provider model catalogs
@@ -4809,6 +4819,20 @@ async fn async_main(command: clap::Command) -> Result<()> {
         } => handle_estop_command(&config, estop_command, level, domains, tools),
 
         Commands::Cron { cron_command } => cron::handle_command(cron_command, &config),
+
+        Commands::Charge { charge_command } => {
+            #[cfg(feature = "agent-runtime")]
+            {
+                handle_charge_command(charge_command, &config).await
+            }
+            #[cfg(not(feature = "agent-runtime"))]
+            {
+                let _ = charge_command;
+                anyhow::bail!(
+                    "This command requires the full runtime. Rebuild with default features:\n  cargo build --release"
+                )
+            }
+        }
 
         Commands::Models { model_command } => {
             #[cfg(feature = "agent-runtime")]
@@ -9683,5 +9707,62 @@ mod tests {
             msg.contains("No model provider configured"),
             "error must mention missing provider; got: {msg}"
         );
+    }
+}
+
+/// `zeroclaw charge` — inspect and settle Solana Pay invoices.
+///
+/// `check` runs the same pass as the daemon's `charge-settlement` worker, for
+/// verifying the whole chain by hand without waiting for a tick.
+#[cfg(feature = "agent-runtime")]
+async fn handle_charge_command(
+    command: ChargeCommands,
+    config: &zeroclaw_config::schema::Config,
+) -> anyhow::Result<()> {
+    use zeroclaw_runtime::charge;
+
+    match command {
+        ChargeCommands::Check => {
+            let summary = charge::run_settlement_pass(config).await?;
+            println!(
+                "checked {} · settled {} · pending {} · expired {} · notified {}",
+                summary.checked,
+                summary.settled,
+                summary.still_pending,
+                summary.expired,
+                summary.notified
+            );
+            // Surface degraded runs to cron, which records a non-zero exit as a
+            // failed job. A silent 0 here would make an unreachable RPC node or
+            // a dead channel look like a healthy no-op forever.
+            if summary.errors > 0 || summary.notify_failures > 0 {
+                anyhow::bail!(
+                    "{} settlement check(s) and {} confirmation(s) failed; \
+                     affected invoices stay pending for the next run",
+                    summary.errors,
+                    summary.notify_failures
+                );
+            }
+            Ok(())
+        }
+        ChargeCommands::List { agent_alias, table } => {
+            let invoices = charge::store::list_open_invoices(config, &agent_alias, table)?;
+            if invoices.is_empty() {
+                println!("No open invoices.");
+                return Ok(());
+            }
+            for inv in &invoices {
+                println!(
+                    "{}  {}  {} {}  created {}",
+                    inv.id,
+                    inv.charged_to(),
+                    inv.display_amount(),
+                    inv.currency,
+                    inv.created_at.to_rfc3339()
+                );
+            }
+            println!("{} open invoice(s).", invoices.len());
+            Ok(())
+        }
     }
 }

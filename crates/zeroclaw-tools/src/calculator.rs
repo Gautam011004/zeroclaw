@@ -116,6 +116,7 @@ impl Tool for CalculatorTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("Missing required parameter: function".to_string()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -163,12 +164,14 @@ impl Tool for CalculatorTool {
                         output,
                     ),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Err(err) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(err),
+                attachments: Vec::new(),
             }),
         }
     }

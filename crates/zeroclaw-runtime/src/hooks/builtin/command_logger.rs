@@ -68,6 +68,7 @@ mod tests {
             success: true,
             output: "ok".into(),
             error: None,
+            attachments: Vec::new(),
         };
         hook.on_after_tool_call("shell", &result, Duration::from_millis(42))
             .await;

@@ -13,6 +13,7 @@ use std::collections::HashSet;
 use std::fmt::Write;
 use std::sync::Mutex;
 use std::time::{Duration, Instant};
+use zeroclaw_api::media::MediaAttachment;
 use zeroclaw_config::schema::PacingConfig;
 use zeroclaw_providers::ChatMessage;
 use zeroclaw_tool_call_parser::ParsedToolCall;
@@ -41,6 +42,7 @@ pub(crate) fn collect_tool_results(
     loop_ignore_tools: &HashSet<&str>,
     max_tool_result_chars: usize,
     collected_receipts: Option<&Mutex<Vec<String>>>,
+    collected_attachments: Option<&Mutex<Vec<MediaAttachment>>>,
     model: &str,
     iteration: usize,
     turn_id: &str,
@@ -50,7 +52,7 @@ pub(crate) fn collect_tool_results(
     let mut detection_relevant_output = String::new();
     // Use enumerate *before* filter_map so result_index stays aligned with
     // tool_calls even when some ordered_results entries are None.
-    for (result_index, (tool_name, tool_call_id, outcome)) in ordered_results
+    for (result_index, (tool_name, tool_call_id, mut outcome)) in ordered_results
         .into_iter()
         .enumerate()
         .filter_map(|(i, opt)| opt.map(|v| (i, v)))
@@ -139,6 +141,20 @@ pub(crate) fn collect_tool_results(
             {
                 v.push(format!("{tool_name}: {receipt}"));
             }
+        }
+        // Hand tool-produced media to the per-turn collector before this outcome
+        // is dropped. Everything else in this function builds model-visible text;
+        // attachment bytes deliberately never enter `history`, the provider
+        // request, or the `<tool_result>` blocks — they leave through the
+        // turn-scoped side channel and rejoin at delivery as
+        // `SendMessage::attachments`.
+        if !outcome.attachments.is_empty()
+            && let Some(store) = collected_attachments
+        {
+            store
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .extend(std::mem::take(&mut outcome.attachments));
         }
         individual_results.push((tool_call_id, result_output.clone()));
         let _ = writeln!(
@@ -232,6 +248,7 @@ mod tests {
             duration: Duration::from_millis(1),
             receipt: None,
             output_data: None,
+            attachments: Vec::new(),
         }
     }
 
@@ -263,6 +280,7 @@ mod tests {
             &mut detector,
             &ignore,
             10_000,
+            None,
             None,
             "test-model",
             0,
@@ -321,6 +339,7 @@ mod tests {
                 &ignore,
                 10_000,
                 None,
+                None,
                 "test-model",
                 iteration,
                 "turn-test",
@@ -342,5 +361,130 @@ mod tests {
     #[test]
     fn failed_identical_outputs_do_not_trip_hash_based_abort() {
         assert!(run_hash_path(8, RATE_LIMIT_ERR, false).is_ok());
+    }
+
+    fn png(name: &str) -> MediaAttachment {
+        MediaAttachment {
+            file_name: name.to_string(),
+            data: vec![0x89, b'P', b'N', b'G'],
+            mime_type: Some("image/png".to_string()),
+        }
+    }
+
+    /// Collect one round mixing an attachment-bearing tool with a plain one,
+    /// returning the results and whatever landed in the collector.
+    fn run_with_attachments() -> (CollectedResults, Vec<MediaAttachment>) {
+        let mut detector = LoopDetector::new(LoopDetectorConfig::default());
+        let ignore: HashSet<&str> = HashSet::new();
+        let mut history: Vec<ChatMessage> = Vec::new();
+        let collector: Mutex<Vec<MediaAttachment>> = Mutex::new(Vec::new());
+
+        let tool_calls = vec![
+            ParsedToolCall {
+                name: "charge".to_string(),
+                arguments: serde_json::json!({ "amount": 10 }),
+                tool_call_id: None,
+            },
+            ParsedToolCall {
+                name: "file_read".to_string(),
+                arguments: serde_json::json!({ "path": "a.rs" }),
+                tool_call_id: None,
+            },
+        ];
+        let mut with_media = outcome("{\"invoice_id\":\"inv-1\"}", true);
+        with_media.attachments = vec![png("inv-1.png"), png("receipt.png")];
+        let ordered = vec![
+            Some(("charge".to_string(), None, with_media)),
+            Some(("file_read".to_string(), None, outcome("plain text", true))),
+        ];
+
+        let collected = collect_tool_results(
+            ordered,
+            &tool_calls,
+            &mut history,
+            &mut detector,
+            &ignore,
+            10_000,
+            None,
+            Some(&collector),
+            "test-model",
+            0,
+            "turn-test",
+        )
+        .expect("collection must succeed");
+        let drained = collector.into_inner().unwrap_or_else(|e| e.into_inner());
+        (collected, drained)
+    }
+
+    #[test]
+    fn tool_attachments_reach_the_collector_in_order() {
+        let (_, drained) = run_with_attachments();
+        let names: Vec<_> = drained.iter().map(|a| a.file_name.as_str()).collect();
+        assert_eq!(
+            names,
+            ["inv-1.png", "receipt.png"],
+            "every attachment a tool returned must reach the per-turn collector, in order"
+        );
+    }
+
+    #[test]
+    fn attachment_bytes_never_enter_model_visible_output() {
+        // The whole point of the side channel: binary payloads must not be
+        // rendered into the `<tool_result>` blocks or per-call tool messages
+        // that become LLM history.
+        let (collected, drained) = run_with_attachments();
+        assert!(!drained.is_empty(), "precondition: media was produced");
+
+        let model_visible = format!(
+            "{}{}{}",
+            collected.tool_results,
+            collected.detection_relevant_output,
+            collected
+                .individual_results
+                .iter()
+                .map(|(_, out)| out.as_str())
+                .collect::<String>()
+        );
+        for name in ["inv-1.png", "receipt.png"] {
+            assert!(
+                !model_visible.contains(name),
+                "attachment file name leaked into model-visible text: {model_visible}"
+            );
+        }
+        assert!(
+            !model_visible.contains("PNG"),
+            "attachment bytes leaked into model-visible text: {model_visible}"
+        );
+    }
+
+    #[test]
+    fn attachments_are_dropped_when_no_collector_is_installed() {
+        // A `None` collector must be inert, not a panic — sub-turn sites and
+        // paths with no delivery surface pass `None`.
+        let mut detector = LoopDetector::new(LoopDetectorConfig::default());
+        let ignore: HashSet<&str> = HashSet::new();
+        let mut history: Vec<ChatMessage> = Vec::new();
+        let tool_calls = vec![ParsedToolCall {
+            name: "charge".to_string(),
+            arguments: serde_json::json!({}),
+            tool_call_id: None,
+        }];
+        let mut with_media = outcome("ok", true);
+        with_media.attachments = vec![png("x.png")];
+
+        let collected = collect_tool_results(
+            vec![Some(("charge".to_string(), None, with_media))],
+            &tool_calls,
+            &mut history,
+            &mut detector,
+            &ignore,
+            10_000,
+            None,
+            None,
+            "test-model",
+            0,
+            "turn-test",
+        );
+        assert!(collected.is_ok());
     }
 }

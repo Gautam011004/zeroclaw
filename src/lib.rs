@@ -598,6 +598,28 @@ pub enum MigrateCommands {
     },
 }
 
+/// Charge subcommands
+#[derive(Subcommand, Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum ChargeCommands {
+    /// Run one settlement pass: verify pending invoices on-chain, settle the
+    /// paid ones, and deliver payment confirmations to their originating
+    /// channels.
+    ///
+    /// The daemon runs this automatically via its `charge-settlement` worker;
+    /// this command is for triggering a pass by hand.
+    Check,
+    /// List open (pending) invoices.
+    List {
+        /// Configured agent alias whose invoices to list. Required —
+        /// there is no default agent, and the ledger is shared across agents.
+        #[arg(short = 'a', long = "agent")]
+        agent_alias: String,
+        /// Only invoices for this table.
+        #[arg(long)]
+        table: Option<u64>,
+    },
+}
+
 /// Cron subcommands
 #[derive(Subcommand, Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum CronCommands {

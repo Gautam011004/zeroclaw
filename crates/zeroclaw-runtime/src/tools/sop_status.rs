@@ -125,12 +125,14 @@ impl Tool for SopStatusTool {
                         success: true,
                         output: output.into(),
                         error: None,
+                        attachments: Vec::new(),
                     })
                 }
                 None => Ok(ToolResult {
                     success: true,
                     output: format!("No run found with ID '{run_id}'.").into(),
                     error: None,
+                    attachments: Vec::new(),
                 }),
             };
         }
@@ -200,6 +202,7 @@ impl Tool for SopStatusTool {
             success: true,
             output: output.into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 }

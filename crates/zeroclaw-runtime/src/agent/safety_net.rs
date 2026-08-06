@@ -135,6 +135,7 @@ impl Tool for CountingTool {
             success: true,
             output: format!("{}-out", self.name).into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 }
@@ -463,6 +464,7 @@ async fn safety_net_thinking_never_leaks_into_draft_or_chunks() {
         shared_budget: None,
         channel: None,
         collected_receipts: None,
+        collected_attachments: None,
         event_tx: None,
         steering: None,
         new_messages_out: None,
@@ -757,6 +759,7 @@ async fn safety_net_task_locals_probe_per_entry_path() {
                 success: true,
                 output: "ok".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -848,6 +851,7 @@ async fn safety_net_task_locals_probe_per_entry_path() {
                 shared_budget: None,
                 channel: None,
                 collected_receipts: None,
+                collected_attachments: None,
                 event_tx: None,
                 steering: None,
                 new_messages_out: None,
@@ -955,6 +959,7 @@ async fn safety_net_streaming_tool_results_input_order_and_midbatch_cancel() {
                 success: true,
                 output: "gamma-out".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -1317,6 +1322,7 @@ async fn safety_net_midbatch_cancel_emits_events_for_completed_tools() {
                 success: true,
                 output: "gamma-out".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -1705,6 +1711,7 @@ impl Tool for CapturingArgTool {
             success: true,
             output: self.output.into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 }

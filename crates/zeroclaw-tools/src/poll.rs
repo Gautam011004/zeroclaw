@@ -169,6 +169,7 @@ On ACP channels that advertise elicitation.form, the tool blocks until the user 
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Action blocked: {e}")),
+                attachments: Vec::new(),
             });
         }
 
@@ -197,6 +198,7 @@ On ACP channels that advertise elicitation.form, the tool blocks until the user 
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(msg),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -277,6 +279,7 @@ On ACP channels that advertise elicitation.form, the tool blocks until the user 
                         .to_string()
                         .into(),
                         error: None,
+                        attachments: Vec::new(),
                     });
                 }
                 Ok(None) => { /* fall through to text-poll fallback */ }
@@ -285,6 +288,7 @@ On ACP channels that advertise elicitation.form, the tool blocks until the user 
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Interactive poll failed: {e}")),
+                        attachments: Vec::new(),
                     });
                 }
             }
@@ -304,6 +308,7 @@ On ACP channels that advertise elicitation.form, the tool blocks until the user 
                         .to_string()
                         .into(),
                         error: None,
+                        attachments: Vec::new(),
                     });
                 }
                 Ok(None) => { /* fall through to text-poll fallback */ }
@@ -312,6 +317,7 @@ On ACP channels that advertise elicitation.form, the tool blocks until the user 
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("Interactive poll failed: {e}")),
+                        attachments: Vec::new(),
                     });
                 }
             }
@@ -329,6 +335,7 @@ On ACP channels that advertise elicitation.form, the tool blocks until the user 
                 error: Some(format!(
                     "Failed to send poll to channel '{channel_name}': {e}"
                 )),
+                attachments: Vec::new(),
             });
         }
 
@@ -349,6 +356,7 @@ On ACP channels that advertise elicitation.form, the tool blocks until the user 
             )
             .into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 }

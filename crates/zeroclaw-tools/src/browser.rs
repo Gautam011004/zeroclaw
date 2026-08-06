@@ -762,6 +762,7 @@ impl BrowserTool {
                     .unwrap_or_default()
                     .into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
 
@@ -924,6 +925,7 @@ impl BrowserTool {
                     success: true,
                     output: output.into(),
                     error: None,
+                    attachments: Vec::new(),
                 });
             }
 
@@ -941,6 +943,7 @@ impl BrowserTool {
                 success: false,
                 output: ToolOutput::default(),
                 error,
+                attachments: Vec::new(),
             });
         }
 
@@ -949,6 +952,7 @@ impl BrowserTool {
                 success: true,
                 output: body.into(),
                 error: None,
+                attachments: Vec::new(),
             });
         }
 
@@ -959,6 +963,7 @@ impl BrowserTool {
                 "computer-use sidecar request failed with status {status}: {}",
                 body.trim()
             )),
+            attachments: Vec::new(),
         })
     }
 
@@ -987,12 +992,14 @@ impl BrowserTool {
                 success: true,
                 output: output.into(),
                 error: None,
+                attachments: Vec::new(),
             })
         } else {
             Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: resp.error,
+                attachments: Vec::new(),
             })
         }
     }
@@ -1134,6 +1141,7 @@ impl Tool for BrowserTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("Action blocked: autonomy is read-only".into()),
+                attachments: Vec::new(),
             });
         }
 
@@ -1147,6 +1155,7 @@ impl Tool for BrowserTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(error.to_string()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -1167,6 +1176,7 @@ impl Tool for BrowserTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Unknown action: {action_str}")),
+                attachments: Vec::new(),
             });
         }
 
@@ -1179,6 +1189,7 @@ impl Tool for BrowserTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(unavailable_action_for_backend_error(action_str, backend)),
+                attachments: Vec::new(),
             });
         }
 
@@ -1189,6 +1200,7 @@ impl Tool for BrowserTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(e.to_string()),
+                    attachments: Vec::new(),
                 });
             }
         };

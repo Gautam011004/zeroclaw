@@ -92,6 +92,7 @@ impl Tool for SkillHttpTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Invalid URL: {e}")),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -100,6 +101,7 @@ impl Tool for SkillHttpTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("URL userinfo is not allowed".to_string()),
+                attachments: Vec::new(),
             });
         }
         if !matches!(parsed.scheme(), "http" | "https") {
@@ -109,6 +111,7 @@ impl Tool for SkillHttpTool {
                 error: Some(format!(
                     "Only http:// and https:// URLs are allowed, got: {url}"
                 )),
+                attachments: Vec::new(),
             });
         }
 
@@ -133,6 +136,7 @@ impl Tool for SkillHttpTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("HTTP request failed: {e}")),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -156,6 +160,7 @@ impl Tool for SkillHttpTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("Failed to read response body: {e}")),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -168,6 +173,7 @@ impl Tool for SkillHttpTool {
             } else {
                 Some(format!("HTTP {}", status))
             },
+            attachments: Vec::new(),
         })
     }
 }

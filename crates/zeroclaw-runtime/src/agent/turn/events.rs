@@ -88,6 +88,12 @@ pub(crate) async fn emit_tool_result(
             id: id.to_string(),
             name: name.to_string(),
             output: scrub_credentials(&outcome.output),
+            // Project the tool's structured output into typed artifact metadata
+            // when it declared a delivered file, so channels never parse `output`.
+            artifact: outcome
+                .output_data
+                .as_ref()
+                .and_then(ToolArtifact::from_delivered_data),
         })
         .await;
 }
@@ -139,6 +145,7 @@ mod tests {
             duration: Duration::ZERO,
             receipt: None,
             output_data: None,
+            attachments: Vec::new(),
         }
     }
 
@@ -219,6 +226,7 @@ mod tests {
             duration: Duration::ZERO,
             receipt: None,
             output_data: None,
+            attachments: Vec::new(),
         };
         let (tx, mut rx) = tokio::sync::mpsc::channel(8);
         emit_tool_call_pair(&tx, &parsed_call(Some("c1")), &outcome).await;

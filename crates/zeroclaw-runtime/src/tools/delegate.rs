@@ -628,6 +628,7 @@ impl DelegateTool {
                 always_ask_label,
                 Self::INDEPENDENT_ALWAYS_ASK_DOC_REF
             )),
+            attachments: Vec::new(),
         })
     }
 
@@ -1098,6 +1099,7 @@ impl Tool for DelegateTool {
                     "Unknown action '{action_value}'. Use {}.",
                     DelegateAction::usage()
                 )),
+                attachments: Vec::new(),
             });
         };
 
@@ -1136,6 +1138,7 @@ impl Tool for DelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("'agent' parameter must not be empty".into()),
+                attachments: Vec::new(),
             });
         }
 
@@ -1160,6 +1163,7 @@ impl Tool for DelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("'prompt' parameter must not be empty".into()),
+                attachments: Vec::new(),
             });
         }
 
@@ -1219,6 +1223,7 @@ impl DelegateTool {
                             available.join(", ")
                         }
                     )),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -1240,6 +1245,7 @@ impl DelegateTool {
                     depth = self.depth,
                     max = max_depth
                 )),
+                attachments: Vec::new(),
             });
         }
 
@@ -1252,6 +1258,7 @@ impl DelegateTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(error),
+                    attachments: Vec::new(),
                 });
             }
 
@@ -1260,6 +1267,7 @@ impl DelegateTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("{e:#}")),
+                    attachments: Vec::new(),
                 });
             }
             if let Some(refusal) = self.independent_always_ask_refusal(agent_name) {
@@ -1281,6 +1289,7 @@ impl DelegateTool {
                     error: Some(format!(
                         "Failed to create model_provider '{provider_type}' for agent '{agent_name}': {e}"
                     )),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -1340,6 +1349,7 @@ impl DelegateTool {
                     error: Some(format!(
                         "Agent '{agent_name}' timed out after {timeout_secs}s"
                     )),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -1357,12 +1367,14 @@ impl DelegateTool {
                         format!("[Agent '{agent_name}' ({provider_type}/{model})]\n{rendered}",)
                             .into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Agent '{agent_name}' failed: {e}",)),
+                attachments: Vec::new(),
             }),
         }
     }
@@ -1396,6 +1408,7 @@ impl DelegateTool {
                             available.join(", ")
                         }
                     )),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -1410,6 +1423,7 @@ impl DelegateTool {
                     depth = self.depth,
                     max = max_depth
                 )),
+                attachments: Vec::new(),
             });
         }
 
@@ -1421,6 +1435,7 @@ impl DelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
+                attachments: Vec::new(),
             });
         }
 
@@ -1431,6 +1446,7 @@ impl DelegateTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("{e:#}")),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -1452,6 +1468,7 @@ impl DelegateTool {
                      finish (check_result) or cancel one (cancel_task) before starting more.",
                     Self::MAX_CONCURRENT_BACKGROUND_DELEGATIONS
                 )),
+                attachments: Vec::new(),
             });
         }
 
@@ -1668,6 +1685,7 @@ impl DelegateTool {
             )
             .into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 
@@ -1700,6 +1718,7 @@ impl DelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("'prompt' parameter must not be empty".into()),
+                attachments: Vec::new(),
             });
         }
 
@@ -1714,6 +1733,7 @@ impl DelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("'parallel' array must contain at least one agent name".into()),
+                attachments: Vec::new(),
             });
         }
 
@@ -1733,6 +1753,7 @@ impl DelegateTool {
                             available.join(", ")
                         }
                     )),
+                    attachments: Vec::new(),
                 });
             }
         }
@@ -1747,6 +1768,7 @@ impl DelegateTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some(format!("{e:#}")),
+                    attachments: Vec::new(),
                 });
             }
             if let Some(refusal) = self.independent_always_ask_refusal(name) {
@@ -1875,6 +1897,7 @@ impl DelegateTool {
             } else {
                 Some("One or more parallel agents failed".into())
             },
+            attachments: Vec::new(),
         })
     }
 
@@ -2017,6 +2040,7 @@ impl DelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(e),
+                attachments: Vec::new(),
             });
         }
 
@@ -2025,6 +2049,7 @@ impl DelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("No result found for task_id '{task_id}'")),
+                attachments: Vec::new(),
             });
         };
         let error = result.error.clone();
@@ -2046,6 +2071,7 @@ impl DelegateTool {
             } else {
                 None
             },
+            attachments: Vec::new(),
         })
     }
 
@@ -2057,6 +2083,7 @@ impl DelegateTool {
                     success: false,
                     output: String::new().into(),
                     error: Some(error.to_string()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -2067,6 +2094,7 @@ impl DelegateTool {
                     success: false,
                     output: String::new().into(),
                     error: Some(error.to_string()),
+                    attachments: Vec::new(),
                 });
             }
         };
@@ -2119,6 +2147,7 @@ impl DelegateTool {
                     }))?
                     .into(),
                     error,
+                    attachments: Vec::new(),
                 });
             }
 
@@ -2134,6 +2163,7 @@ impl DelegateTool {
                 success: true,
                 output: "No background delegate results found.".into(),
                 error: None,
+                attachments: Vec::new(),
             });
         }
 
@@ -2168,6 +2198,7 @@ impl DelegateTool {
                 success: true,
                 output: "No background delegate results found.".into(),
                 error: None,
+                attachments: Vec::new(),
             });
         }
 
@@ -2175,6 +2206,7 @@ impl DelegateTool {
             success: true,
             output: serde_json::to_string_pretty(&results)?.into(),
             error: None,
+            attachments: Vec::new(),
         })
     }
 
@@ -2219,6 +2251,7 @@ impl DelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(e),
+                attachments: Vec::new(),
             });
         }
 
@@ -2228,6 +2261,7 @@ impl DelegateTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("No task found for task_id '{task_id}'")),
+                attachments: Vec::new(),
             });
         }
 
@@ -2243,6 +2277,7 @@ impl DelegateTool {
                     "Task '{task_id}' is not running (status: {:?})",
                     result.status
                 )),
+                attachments: Vec::new(),
             });
         }
 
@@ -2281,6 +2316,7 @@ impl DelegateTool {
                 format!("Task '{task_id}' marked cancelled (it had already settled).").into()
             },
             error: None,
+            attachments: Vec::new(),
         })
     }
 
@@ -2473,6 +2509,7 @@ impl DelegateTool {
                     "Agent '{agent_name}' is agentic but risk_profile '{}' is not configured",
                     agent_config.risk_profile
                 )),
+                attachments: Vec::new(),
             });
         };
 
@@ -2484,6 +2521,7 @@ impl DelegateTool {
                         success: false,
                         output: ToolOutput::default(),
                         error: Some(format!("{e:#}")),
+                        attachments: Vec::new(),
                     });
                 }
             },
@@ -2525,6 +2563,7 @@ impl DelegateTool {
                             error: Some(format!(
                                 "Failed to initialize independent delegate tools for target '{agent_name}': {e:#}"
                             )),
+                            attachments: Vec::new(),
                         });
                     }
                 }
@@ -2553,6 +2592,7 @@ impl DelegateTool {
                                 error: Some(format!(
                                     "Failed to initialize memory for delegate target '{agent_name}': {e:#}"
                                 )),
+                                attachments: Vec::new(),
                             });
                         }
                     }
@@ -2621,6 +2661,14 @@ impl DelegateTool {
             .flatten();
         let receipt_generator = receipt_scope.as_ref().map(|s| &s.generator);
         let collected_receipts = receipt_scope.as_ref().map(|s| s.collector.as_ref());
+        // Forward the parent turn's attachment collector so media a sub-agent's
+        // tools produce still reaches the channel. Without this a QR code from a
+        // delegated agent would be dropped: only the sub-loop's final *text*
+        // flows back into the parent tool result.
+        let attachment_scope = crate::agent::attachments::AttachmentScope::current();
+        let collected_attachments = attachment_scope
+            .as_ref()
+            .map(crate::agent::attachments::AttachmentScope::collector);
         let turn_id = uuid::Uuid::new_v4().to_string();
         let result = tokio::time::timeout(
             Duration::from_secs(agentic_timeout_secs),
@@ -2677,6 +2725,7 @@ impl DelegateTool {
                 // TODO thread from parent in future
                 channel: None,
                 collected_receipts,
+                collected_attachments,
                 event_tx: None,
                 steering: None,
                 new_messages_out: None,
@@ -2710,12 +2759,14 @@ impl DelegateTool {
                     )
                     .into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Ok(Err(e)) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Agent '{agent_name}' failed: {e}")),
+                attachments: Vec::new(),
             }),
             Err(_) => Ok(ToolResult {
                 success: false,
@@ -2723,6 +2774,7 @@ impl DelegateTool {
                 error: Some(format!(
                     "Agent '{agent_name}' timed out after {agentic_timeout_secs}s"
                 )),
+                attachments: Vec::new(),
             }),
         }
     }
@@ -2807,7 +2859,7 @@ mod tests {
     use zeroclaw_memory::{AgentScopedMemory, SqliteMemory};
     use zeroclaw_providers::{ChatRequest, ChatResponse, ToolCall};
 
-    zeroclaw_api::mock_tool_attribution!(EchoTool, FakeMcpTool);
+    zeroclaw_api::mock_tool_attribution!(EchoTool, FakeMcpTool, MediaEchoTool);
 
     #[tokio::test]
     async fn reconciled_loss_label_surfaces_registry_truth() {
@@ -3099,6 +3151,7 @@ mod tests {
                 success: true,
                 output: format!("echo:{value}").into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -4978,6 +5031,88 @@ mod tests {
         );
     }
 
+    /// Like `EchoTool`, but also returns binary media — the QR-code shape.
+    struct MediaEchoTool;
+
+    #[async_trait]
+    impl Tool for MediaEchoTool {
+        fn name(&self) -> &str {
+            "echo_tool"
+        }
+
+        fn description(&self) -> &str {
+            "Echoes the `value` argument and attaches an image."
+        }
+
+        fn parameters_schema(&self) -> serde_json::Value {
+            serde_json::json!({
+                "type": "object",
+                "properties": {"value": {"type": "string"}},
+                "required": ["value"]
+            })
+        }
+
+        async fn execute(&self, _args: serde_json::Value) -> anyhow::Result<ToolResult> {
+            Ok(ToolResult::ok_with_attachments(
+                "generated",
+                vec![zeroclaw_api::media::MediaAttachment {
+                    file_name: "sub-agent.png".to_string(),
+                    data: vec![0x89, b'P', b'N', b'G'],
+                    mime_type: Some("image/png".to_string()),
+                }],
+            ))
+        }
+    }
+
+    #[tokio::test]
+    async fn execute_agentic_forwards_attachment_scope_into_subagent_loop() {
+        // A sub-agent's media must reach the parent turn's collector. Only the
+        // sub-loop's final *text* flows back through the tool result, so without
+        // scope forwarding a QR code produced by a delegated agent is dropped.
+        use crate::agent::attachments::{AttachmentScope, TURN_ATTACHMENT_SCOPE};
+
+        let config = agentic_agent_config();
+        let tool = DelegateTool::new(HashMap::new(), None, test_security())
+            .with_runtime_profiles(agentic_runtime_profiles(10))
+            .with_risk_profiles(agentic_risk_profiles(vec!["echo_tool".to_string()]))
+            .with_parent_tools(Arc::new(RwLock::new(vec![Arc::new(MediaEchoTool)])));
+
+        let scope = AttachmentScope::new();
+        let model_provider = OneToolThenFinalModelProvider;
+        let result = TURN_ATTACHMENT_SCOPE
+            .scope(Some(scope.clone()), async {
+                tool.execute_agentic(
+                    "agentic",
+                    &config,
+                    "test-provider",
+                    "test-model",
+                    &model_provider,
+                    "run",
+                    Some(0.2),
+                )
+                .await
+            })
+            .await
+            .unwrap();
+
+        assert!(
+            result.success,
+            "delegate sub-loop must complete: {result:?}"
+        );
+        let collected = scope.drain();
+        assert_eq!(
+            collected.len(),
+            1,
+            "expected the sub-agent's single attachment to reach the parent collector, got: {:?}",
+            collected.iter().map(|a| &a.file_name).collect::<Vec<_>>()
+        );
+        assert_eq!(collected[0].file_name, "sub-agent.png");
+        assert!(
+            !result.output.clone().into_string().contains("PNG"),
+            "attachment bytes must not leak into the delegate tool's text output"
+        );
+    }
+
     #[tokio::test]
     async fn delegate_spawn_helper_forwards_session_key() {
         let seen = TOOL_LOOP_SESSION_KEY
@@ -5087,6 +5222,7 @@ mod tests {
                 success: true,
                 output: "mcp_fake_output".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -5534,6 +5670,7 @@ mod tests {
                     success: true,
                     output: ToolOutput::default(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
         }
@@ -7821,6 +7958,7 @@ command = "echo hi"
                 success: true,
                 output: "read".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -7850,6 +7988,7 @@ command = "echo hi"
                 success: true,
                 output: "written".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -7879,6 +8018,7 @@ command = "echo hi"
                 success: true,
                 output: ToolOutput::default(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }

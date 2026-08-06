@@ -99,12 +99,14 @@ impl Tool for UnoQGpioReadTool {
                         success: false,
                         output: resp.clone().into(),
                         error: Some(resp),
+                        attachments: Vec::new(),
                     })
                 } else {
                     Ok(ToolResult {
                         success: true,
                         output: resp.into(),
                         error: None,
+                        attachments: Vec::new(),
                     })
                 }
             }
@@ -112,6 +114,7 @@ impl Tool for UnoQGpioReadTool {
                 success: false,
                 output: format!("Bridge error: {}", e).into(),
                 error: Some(e.to_string()),
+                attachments: Vec::new(),
             }),
         }
     }
@@ -175,12 +178,14 @@ impl Tool for UnoQGpioWriteTool {
                         success: false,
                         output: resp.clone().into(),
                         error: Some(resp),
+                        attachments: Vec::new(),
                     })
                 } else {
                     Ok(ToolResult {
                         success: true,
                         output: "done".into(),
                         error: None,
+                        attachments: Vec::new(),
                     })
                 }
             }
@@ -188,6 +193,7 @@ impl Tool for UnoQGpioWriteTool {
                 success: false,
                 output: format!("Bridge error: {}", e).into(),
                 error: Some(e.to_string()),
+                attachments: Vec::new(),
             }),
         }
     }

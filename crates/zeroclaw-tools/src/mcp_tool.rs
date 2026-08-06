@@ -81,11 +81,13 @@ impl Tool for McpToolWrapper {
                 success: true,
                 output: output.into(),
                 error: None,
+                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(e.to_string()),
+                attachments: Vec::new(),
             }),
         }
     }
@@ -191,7 +193,7 @@ mod tests {
 
     #[tokio::test]
     async fn execute_returns_non_fatal_error_for_unknown_tool() {
-        // An empty registry has no tools — execute must return Ok(ToolResult { success: false })
+        // An empty registry has no tools — execute must return Ok(ToolResult { success: false, .. })
         // rather than propagating an Err (non-fatal by design).
         let registry = empty_registry().await;
         let def = make_def("ghost", Some("Ghost tool"), json!({}));
@@ -217,6 +219,7 @@ mod tests {
             success: true,
             output: "hello".to_string().into(),
             error: None,
+            attachments: Vec::new(),
         };
     }
 

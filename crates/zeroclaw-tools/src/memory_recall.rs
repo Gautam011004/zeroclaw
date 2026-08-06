@@ -70,6 +70,7 @@ impl Tool for MemoryRecallTool {
                 error: Some(format!(
                     "Invalid 'since' date: {s}. Expected RFC 3339 format, e.g. 2025-03-01T00:00:00Z"
                 )),
+                attachments: Vec::new(),
             });
         }
         if let Some(u) = until
@@ -81,6 +82,7 @@ impl Tool for MemoryRecallTool {
                 error: Some(format!(
                     "Invalid 'until' date: {u}. Expected RFC 3339 format, e.g. 2025-03-01T00:00:00Z"
                 )),
+                attachments: Vec::new(),
             });
         }
         if let (Some(s), Some(u)) = (since, until)
@@ -94,6 +96,7 @@ impl Tool for MemoryRecallTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some("'since' must be before 'until'".into()),
+                attachments: Vec::new(),
             });
         }
 
@@ -108,6 +111,7 @@ impl Tool for MemoryRecallTool {
                 success: true,
                 output: "No memories found.".into(),
                 error: None,
+                attachments: Vec::new(),
             }),
             Ok(entries) => {
                 let mut output = format!("Found {} memories:\n", entries.len());
@@ -125,12 +129,14 @@ impl Tool for MemoryRecallTool {
                     success: true,
                     output: output.into(),
                     error: None,
+                    attachments: Vec::new(),
                 })
             }
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Memory recall failed: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }

@@ -127,6 +127,7 @@ pub(crate) async fn gate_tool_approval(
                 duration: Duration::ZERO,
                 receipt: None,
                 output_data: None,
+                attachments: Vec::new(),
             });
         }
 
@@ -162,6 +163,7 @@ pub(crate) async fn gate_tool_approval(
                 duration: Duration::ZERO,
                 receipt: None,
                 output_data: None,
+                attachments: Vec::new(),
             });
         }
 

@@ -78,6 +78,7 @@ impl Tool for ReactionTool {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(error),
+                attachments: Vec::new(),
             });
         }
 
@@ -143,6 +144,7 @@ impl Tool for ReactionTool {
                 error: Some(format!(
                     "Invalid action '{action}': must be 'add' or 'remove'"
                 )),
+                attachments: Vec::new(),
             });
         }
 
@@ -154,6 +156,7 @@ impl Tool for ReactionTool {
                     success: false,
                     output: ToolOutput::default(),
                     error: Some("No channels available yet (channels not initialized)".to_string()),
+                    attachments: Vec::new(),
                 });
             }
             match map.get(channel_name) {
@@ -167,6 +170,7 @@ impl Tool for ReactionTool {
                             "Channel '{channel_name}' not found. Available channels: {}",
                             available.join(", ")
                         )),
+                        attachments: Vec::new(),
                     });
                 }
             }
@@ -192,11 +196,13 @@ impl Tool for ReactionTool {
                 )
                 .into(),
                 error: None,
+                attachments: Vec::new(),
             }),
             Err(e) => Ok(ToolResult {
                 success: false,
                 output: ToolOutput::default(),
                 error: Some(format!("Failed to {action} reaction: {e}")),
+                attachments: Vec::new(),
             }),
         }
     }

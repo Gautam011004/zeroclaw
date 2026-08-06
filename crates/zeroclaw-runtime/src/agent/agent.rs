@@ -2366,6 +2366,11 @@ impl Agent {
                         collected_receipts: receipt_scope
                             .as_ref()
                             .map(crate::agent::tool_receipts::ReceiptScope::collector),
+                        // `Agent::turn*` returns text; delivery is the caller's
+                        // job, so this surface owns no attachment collector.
+                        // Entrypoints that do deliver (the channel orchestrator)
+                        // install their own scope around the loop.
+                        collected_attachments: None,
                         event_tx: None,
                         steering: None,
                         new_messages_out: Some(&mut loop_new_messages),
@@ -2744,6 +2749,11 @@ impl Agent {
                         collected_receipts: receipt_scope
                             .as_ref()
                             .map(crate::agent::tool_receipts::ReceiptScope::collector),
+                        // `Agent::turn*` returns text; delivery is the caller's
+                        // job, so this surface owns no attachment collector.
+                        // Entrypoints that do deliver (the channel orchestrator)
+                        // install their own scope around the loop.
+                        collected_attachments: None,
                         event_tx: Some(event_tx.clone()),
                         steering: None,
                         new_messages_out: Some(&mut round_added),
@@ -3888,6 +3898,7 @@ mod tests {
                 success: true,
                 output: "tool-out".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -4100,6 +4111,7 @@ mod tests {
                 success: true,
                 output: "tool-out".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -4128,6 +4140,7 @@ mod tests {
                 success: true,
                 output: "tool-out".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -8002,6 +8015,7 @@ mod tests {
                 success: true,
                 output: "ok".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }
@@ -9304,6 +9318,7 @@ mod tests {
                 success: true,
                 output: "model switch queued".into(),
                 error: None,
+                attachments: Vec::new(),
             })
         }
     }

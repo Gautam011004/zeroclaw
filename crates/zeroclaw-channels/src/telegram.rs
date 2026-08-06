@@ -7,11 +7,17 @@ use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 use zeroclaw_api::channel::{Channel, ChannelMessage, SendMessage};
+use zeroclaw_api::media::{MediaAttachment, MediaKind};
 use zeroclaw_config::schema::{Config, StreamMode, TELEGRAM_OFFICIAL_API_BASE_URL};
 use zeroclaw_runtime::security::pairing::PairingGuard;
 
 /// Telegram's maximum message length for text messages
 const TELEGRAM_MAX_MESSAGE_LENGTH: usize = 4096;
+/// Bot API ceiling for any multipart upload (`sendDocument`, `sendPhoto`, …).
+const TELEGRAM_UPLOAD_MAX_BYTES: usize = 50 * 1024 * 1024;
+/// Bot API ceiling for `sendPhoto` specifically. Larger images still deliver,
+/// as documents.
+const TELEGRAM_PHOTO_MAX_BYTES: usize = 10 * 1024 * 1024;
 const TELEGRAM_CONTINUED_PREFIX: &str = "(continued)\n\n";
 const TELEGRAM_CONTINUES_SUFFIX: &str = "\n\n(continues...)";
 const TELEGRAM_FENCE_REOPEN: &str = "```\n";
@@ -996,7 +1002,7 @@ impl TelegramChannel {
             serde_json::json!({ "command": "stop",   "description": "Cancel the current in-flight task" }),
             serde_json::json!({ "command": "model",  "description": "Show or switch the current model" }),
             serde_json::json!({ "command": "models", "description": "List available model_providers or switch model_provider" }),
-            serde_json::json!({ "command": "config", "description": "Show current configuration" })
+            serde_json::json!({ "command": "config", "description": "Show current configuration" }),
         ];
 
         // Track registered names to deduplicate across skills and tools.
@@ -2913,6 +2919,44 @@ Allowlist Telegram username (without '@') or numeric user ID.",
     }
 
     /// Send a photo from bytes (in-memory) to a Telegram chat
+    /// Deliver one runtime-produced [`MediaAttachment`] — bytes a tool returned
+    /// on `ToolResult::attachments`, never a path or URL.
+    ///
+    /// Routes by [`MediaAttachment::kind`] so an image arrives as a viewable
+    /// photo rather than a download card: `sendDocument` renders a QR code as a
+    /// file attachment the user must tap to open, which defeats the point.
+    /// Telegram re-encodes and size-caps photos, so anything over
+    /// [`TELEGRAM_PHOTO_MAX_BYTES`] falls back to `sendDocument`, which
+    /// preserves the original bytes.
+    async fn send_media_attachment(
+        &self,
+        chat_id: &str,
+        thread_id: Option<&str>,
+        attachment: &MediaAttachment,
+    ) -> anyhow::Result<()> {
+        if attachment.data.len() > TELEGRAM_UPLOAD_MAX_BYTES {
+            anyhow::bail!(
+                "attachment '{}' is {} bytes, above Telegram's {} byte upload limit",
+                attachment.file_name,
+                attachment.data.len(),
+                TELEGRAM_UPLOAD_MAX_BYTES
+            );
+        }
+        let bytes = attachment.data.clone();
+        let name = attachment.file_name.as_str();
+        if matches!(attachment.kind(), MediaKind::Image)
+            && attachment.data.len() <= TELEGRAM_PHOTO_MAX_BYTES
+        {
+            self.send_photo_bytes(chat_id, thread_id, bytes, name, None)
+                .await
+        } else {
+            // Audio and video have no byte-based sender here; a document
+            // preserves the payload exactly and Telegram still previews it.
+            self.send_document_bytes(chat_id, thread_id, bytes, name, None)
+                .await
+        }
+    }
+
     pub async fn send_photo_bytes(
         &self,
         chat_id: &str,
@@ -3654,7 +3698,10 @@ impl Channel for TelegramChannel {
 
         let (text_without_markers, attachments) = parse_attachment_markers(&content);
 
-        if !attachments.is_empty() {
+        // Two independent sources of media: `[IMAGE:/path]`-style markers the
+        // model wrote into the text, and `message.attachments` — raw bytes a
+        // tool produced this turn, which never passed through the model at all.
+        if !attachments.is_empty() || !message.attachments.is_empty() {
             if !text_without_markers.is_empty() {
                 self.send_text_chunks(&text_without_markers, chat_id, thread_id)
                     .await?;
@@ -3662,6 +3709,11 @@ impl Channel for TelegramChannel {
 
             for attachment in &attachments {
                 self.send_attachment(chat_id, thread_id, attachment).await?;
+            }
+
+            for attachment in &message.attachments {
+                self.send_media_attachment(chat_id, thread_id, attachment)
+                    .await?;
             }
 
             return Ok(());
@@ -5222,6 +5274,91 @@ mod tests {
     }
 
     // ── File path handling tests ────────────────────────────────────
+
+    fn test_channel() -> TelegramChannel {
+        TelegramChannel::new(
+            "fake-token".into(),
+            "telegram_test_alias",
+            Arc::new(|| vec!["*".into()]),
+            false,
+        )
+    }
+
+    #[tokio::test]
+    async fn send_media_attachment_rejects_payload_over_the_upload_limit() {
+        // Fails fast on size rather than streaming 50MB+ at Telegram only to be
+        // rejected. Deterministic: this returns before any network call.
+        let ch = test_channel();
+        let oversized = MediaAttachment {
+            file_name: "huge.bin".to_string(),
+            data: vec![0u8; TELEGRAM_UPLOAD_MAX_BYTES + 1],
+            mime_type: Some("application/octet-stream".to_string()),
+        };
+
+        let err = ch
+            .send_media_attachment("123456", None, &oversized)
+            .await
+            .expect_err("an over-limit attachment must be rejected")
+            .to_string();
+        assert!(
+            err.contains("upload limit") && err.contains("huge.bin"),
+            "error must name the file and the limit, got: {err}"
+        );
+    }
+
+    #[tokio::test]
+    async fn send_media_attachment_accepts_payload_at_the_upload_limit() {
+        // Boundary: exactly at the cap is allowed through to the network call,
+        // so the guard is `>` and not `>=`.
+        let ch = test_channel();
+        let at_limit = MediaAttachment {
+            file_name: "exact.bin".to_string(),
+            data: vec![0u8; TELEGRAM_UPLOAD_MAX_BYTES],
+            mime_type: Some("application/octet-stream".to_string()),
+        };
+
+        let err = ch
+            .send_media_attachment("123456", None, &at_limit)
+            .await
+            .expect_err("no server is running, so the network call must fail")
+            .to_string();
+        assert!(
+            !err.contains("upload limit"),
+            "an at-limit attachment must pass the size guard, got: {err}"
+        );
+    }
+
+    #[test]
+    fn media_kind_routes_images_to_photo_and_everything_else_to_document() {
+        // Guards the routing predicate behind `send_media_attachment`: a QR code
+        // must arrive as a viewable photo, not a tap-to-download file card.
+        let png = MediaAttachment {
+            file_name: "qr.png".to_string(),
+            data: vec![0x89, b'P', b'N', b'G'],
+            mime_type: Some("image/png".to_string()),
+        };
+        assert!(matches!(png.kind(), MediaKind::Image));
+        assert!(png.data.len() <= TELEGRAM_PHOTO_MAX_BYTES);
+
+        let pdf = MediaAttachment {
+            file_name: "invoice.pdf".to_string(),
+            data: vec![b'%', b'P', b'D', b'F'],
+            mime_type: Some("application/pdf".to_string()),
+        };
+        assert!(
+            !matches!(pdf.kind(), MediaKind::Image),
+            "a PDF must not take the sendPhoto path"
+        );
+
+        // An image above the photo cap still delivers — as a document.
+        let huge_png = MediaAttachment {
+            file_name: "big.png".to_string(),
+            data: vec![0u8; TELEGRAM_PHOTO_MAX_BYTES + 1],
+            mime_type: Some("image/png".to_string()),
+        };
+        assert!(matches!(huge_png.kind(), MediaKind::Image));
+        assert!(huge_png.data.len() > TELEGRAM_PHOTO_MAX_BYTES);
+    }
 
     #[tokio::test]
     async fn telegram_send_document_nonexistent_file() {
